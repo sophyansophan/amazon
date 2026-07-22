@@ -459,45 +459,105 @@
             appData.settings[settingKey].push(val);
             input.value = '';
             saveData();
+            showToast('Data master berhasil ditambah!');
+            
+            // Langsung sinkronkan perubahan ke Cloud
+            if(appData.gasUrl && navigator.onLine) syncData(true);
         }
+    }
+
+    function removeMaster(settingKey, index) {
+        // Modal Konfirmasi custom agar elegan (tidak pakai browser confirm)
+        const modal = document.createElement('div');
+        modal.className = 'fixed inset-0 bg-black bg-opacity-50 z-[100] flex items-center justify-center';
+        modal.innerHTML = `
+            <div class="bg-white p-5 rounded-xl w-80 text-center">
+                <h3 class="text-lg font-bold mb-2">Hapus Data Master?</h3>
+                <p class="text-sm text-gray-500 mb-4">Apakah Anda yakin ingin menghapus "${appData.settings[settingKey][index]}"?</p>
+                <div class="flex gap-3">
+                    <button id="btn-cancel-del" class="flex-1 border p-2 rounded-lg font-medium text-gray-600">Batal</button>
+                    <button id="btn-confirm-del" class="flex-1 bg-red-600 text-white p-2 rounded-lg font-medium">Hapus</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+
+        document.getElementById('btn-cancel-del').onclick = () => modal.remove();
+        document.getElementById('btn-confirm-del').onclick = () => {
+            if (appData.settings[settingKey] && appData.settings[settingKey].length > index) {
+                appData.settings[settingKey].splice(index, 1);
+                saveData(); 
+                showToast('Data master berhasil dihapus!');
+                
+                // Langsung sinkronkan perubahan ke Cloud
+                if(appData.gasUrl && navigator.onLine) syncData(true);
+            }
+            modal.remove();
+        };
     }
 
     // --- FITUR BARU: TARIK DATA (PULL) ---
     async function pullDataFromCloud(isSilent = false) {
-        if(!appData.gasUrl) {
-            if(!isSilent) showToast('Seting URL Google Apps Script dulu di tab Pengaturan!');
+        if(!appData.gasUrl || !appData.gasUrl.startsWith('https://script.google.com/')) {
+            if(!isSilent) showToast('URL Apps Script tidak valid! Pastikan link benar.');
             return;
         }
 
-        // Jika mode diam (saat auto-sync), jangan tampilkan konfirmasi
-        if(!isSilent) {
-            const confirmPull = confirm("Perhatian: Menarik data dari Spreadsheet akan menimpa/mengganti semua data aplikasi saat ini dengan data dari Spreadsheet. Lanjutkan?");
-            if(!confirmPull) return;
-            showToast('Sedang menarik data dari Spreadsheet...');
-        }
-        
-        try {
-            const response = await fetch(appData.gasUrl, {
-                method: 'POST',
-                body: JSON.stringify({ action: 'pull' }),
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' }
-            });
+        const executePull = async () => {
+            if(!isSilent) showToast('Sedang menarik data dari Spreadsheet...');
             
-            const result = await response.json();
-            
-            if(result.status === 'success') {
-                appData.transactions = result.data;
-                saveData(); 
-                if(!isSilent) {
-                    showToast('Data berhasil ditarik dari Spreadsheet!');
-                    switchView('dashboard');
+            try {
+                const response = await fetch(appData.gasUrl, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'pull' }),
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    redirect: 'follow'
+                });
+                
+                const result = await response.json();
+                
+                if(result.status === 'success') {
+                    appData.transactions = result.data;
+                    // Update Data Master jika diterima dari Cloud
+                    if(result.settings && (result.settings.materials.length > 0 || result.settings.workers.length > 0 || result.settings.supplies.length > 0)) {
+                        appData.settings = result.settings;
+                    }
+                    
+                    saveData(); 
+                    if(!isSilent) showToast('Data berhasil disinkronisasi dengan Spreadsheet!');
+                } else {
+                    if(!isSilent) showToast('Gagal dari server: ' + result.message);
                 }
-            } else {
-                throw new Error(result.message);
+            } catch(err) {
+                console.error("Fetch Error:", err);
+                if(!isSilent) showToast('Gagal terhubung! Pastikan Script diset ke "Anyone".');
             }
-        } catch(err) {
-            console.error(err);
-            if(!isSilent) showToast('Gagal menarik data. Cek URL atau koneksi internet.');
+        };
+
+        // Jika mode diam (saat auto-sync), langsung eksekusi
+        if(isSilent) {
+            executePull();
+        } else {
+            // Modal Konfirmasi custom pengganti confirm()
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black bg-opacity-50 z-[100] flex items-center justify-center';
+            modal.innerHTML = `
+                <div class="bg-white p-5 rounded-xl w-80 text-center">
+                    <h3 class="text-lg font-bold mb-2">Tarik Data?</h3>
+                    <p class="text-sm text-gray-500 mb-4">Menarik data dari Spreadsheet akan menimpa semua data aplikasi saat ini. Lanjutkan?</p>
+                    <div class="flex gap-3">
+                        <button id="btn-cancel-pull" class="flex-1 border p-2 rounded-lg font-medium text-gray-600">Batal</button>
+                        <button id="btn-confirm-pull" class="flex-1 bg-indigo-600 text-white p-2 rounded-lg font-medium">Lanjutkan</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+
+            document.getElementById('btn-cancel-pull').onclick = () => modal.remove();
+            document.getElementById('btn-confirm-pull').onclick = () => {
+                modal.remove();
+                executePull();
+            };
         }
     }
 
@@ -531,10 +591,12 @@
         };
     }
 
-    async function syncData() {
-        if(!appData.gasUrl) {
-            showToast('Seting URL Google Apps Script dulu di tab Pengaturan!');
-            switchView('pengaturan');
+    async function syncData(isBackground = false) {
+        if(!appData.gasUrl || !appData.gasUrl.startsWith('https://script.google.com/')) {
+            if(!isBackground) {
+                showToast('URL Apps Script tidak valid!');
+                switchView('pengaturan');
+            }
             return;
         }
 
@@ -549,20 +611,18 @@
             });
         });
 
-        // Jika tidak ada data yang perlu dikirim (Push), langsung Tarik (Pull) agar data Excel termuat
-        if(unsynced.length === 0) {
-            showToast('Menyinkronkan data dari Spreadsheet...');
-            await pullDataFromCloud(true);
-            syncIcon.classList.remove('fa-spin');
-            showToast('Data berhasil disinkronisasi!');
-            return;
-        }
-
         try {
+            // Selalu jalankan Push untuk memastikan Master Data terupdate
             const response = await fetch(appData.gasUrl, {
                 method: 'POST',
-                body: JSON.stringify({ action: 'sync', data: unsynced }),
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+                // Kita sekarang mengirimkan req.data (transaksi baru) DAN req.settings (master data)
+                body: JSON.stringify({ 
+                    action: 'sync', 
+                    data: unsynced,
+                    settings: appData.settings 
+                }),
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                redirect: 'follow'
             });
             
             const result = await response.json();
@@ -573,16 +633,16 @@
                 });
                 saveData();
                 
-                // Setelah selesai Melempar data (Push), Otomatis tarik pembaruan terakhir (Pull)
+                // Setelah selesai Push, tarik data terbaru agar selalu sinkron
                 await pullDataFromCloud(true);
                 
-                showToast('Sinkronisasi penuh sukses!');
+                if(!isBackground) showToast('Sinkronisasi penuh sukses!');
             } else {
                 throw new Error(result.message);
             }
         } catch(err) {
-            console.error(err);
-            showToast('Gagal sinkron. Cek koneksi / URL Anda.');
+            console.error("Sync Error:", err);
+            if(!isBackground) showToast('Gagal sinkron! Pastikan URL benar & diset ke "Anyone".');
         } finally {
             syncIcon.classList.remove('fa-spin');
         }
