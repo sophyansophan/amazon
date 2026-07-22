@@ -69,6 +69,11 @@
             <div id="dash-detail-material" class="divide-y divide-gray-100"></div>
         </div>
 
+        <h3 class="font-semibold text-gray-700 mt-4 mb-3">Rincian Gaji Pekerja</h3>
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-4">
+            <div id="dash-detail-gaji" class="divide-y divide-gray-100"></div>
+        </div>
+
         <h3 class="font-semibold text-gray-700 mt-4 mb-3">Rincian Item Bahan Bangunan</h3>
         <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-4">
             <div id="dash-detail-bahan" class="divide-y divide-gray-100"></div>
@@ -373,13 +378,16 @@
                 
                 summary[tx.name].cost += tx.total;
                 
-                // Jumlahkan qty sebagai angka murni
-                let numQty = parseFloat(tx.qty);
-                if(isNaN(numQty)) numQty = 1;
-                summary[tx.name].count += numQty;
-                
-                // Pastikan satuan tertangkap (meski berubah di tengah jalan)
-                if(tx.unit) summary[tx.name].unit = tx.unit;
+                // Jika gaji, hitung frekuensi (berapa kali dibayar). Jika material/bahan, hitung quantity-nya.
+                if (type === 'gaji') {
+                    summary[tx.name].count += 1;
+                } else {
+                    let numQty = parseFloat(tx.qty);
+                    if(isNaN(numQty)) numQty = 1;
+                    summary[tx.name].count += numQty;
+                    
+                    if(tx.unit) summary[tx.name].unit = tx.unit;
+                }
             });
 
             const container = document.getElementById(containerId);
@@ -387,12 +395,19 @@
                 container.innerHTML = `<div class="text-center text-xs text-gray-500 py-2">Belum ada data</div>`;
             } else {
                 container.innerHTML = Object.keys(summary).map(name => {
-                    let displayUnit = summary[name].unit || '';
+                    let subText = "";
+                    if (type === 'gaji') {
+                        subText = `Dibayar: ${summary[name].count} kali`;
+                    } else {
+                        let displayUnit = summary[name].unit || '';
+                        subText = `Terkumpul: ${summary[name].count} ${displayUnit}`;
+                    }
+
                     return `
                         <div class="flex justify-between items-center py-2">
                             <div>
                                 <p class="font-medium text-sm text-gray-800">${name}</p>
-                                <p class="text-[10px] text-gray-500">Terkumpul: ${summary[name].count} ${displayUnit}</p>
+                                <p class="text-[10px] text-gray-500">${subText}</p>
                             </div>
                             <div class="font-semibold text-sm text-gray-800">${formatRp(summary[name].cost)}</div>
                         </div>
@@ -402,6 +417,7 @@
         };
 
         renderRincian('material', 'dash-detail-material');
+        renderRincian('gaji', 'dash-detail-gaji');
         renderRincian('bahan', 'dash-detail-bahan');
     }
 
