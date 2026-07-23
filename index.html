@@ -57,12 +57,23 @@
             <!-- Render via JS -->
         </div>
 
+        <!-- Filter Tanggal & Judul Lokasi -->
+        <div class="flex justify-between items-center mb-3">
+             <h2 class="text-lg font-bold text-gray-800" id="dash-lokasi-title">Semua Proyek</h2>
+             <button onclick="openDateFilterModal()" class="bg-white border border-gray-200 text-gray-600 px-3 py-1.5 rounded-full text-[11px] font-medium shadow-sm hover:bg-gray-50 flex items-center gap-1.5 transition">
+                 <i class="far fa-calendar-alt text-blue-500"></i>
+                 <span id="date-filter-label">Semua Waktu</span>
+             </button>
+        </div>
+
+        <!-- Kartu Total Utama -->
         <div class="bg-gradient-to-r from-blue-500 to-blue-700 rounded-2xl p-5 text-white shadow-lg mb-6 relative overflow-hidden">
             <div class="absolute top-0 right-0 p-4 opacity-20"><i class="fas fa-chart-line text-6xl"></i></div>
-            <p class="text-blue-100 text-sm mb-1">Total Pengeluaran <span id="dash-lokasi-label" class="font-semibold text-white">Semua Proyek</span></p>
+            <p class="text-blue-100 text-sm mb-1">Total Pengeluaran</p>
             <h2 class="text-3xl font-bold relative z-10" id="dash-total-all">Rp 0</h2>
         </div>
         
+        <!-- Grid Kategori -->
         <h3 class="font-semibold text-gray-700 mb-3 flex items-center"><i class="fas fa-wallet text-blue-500 mr-2"></i>Rincian Total Pengeluaran</h3>
         <div class="grid grid-cols-2 gap-4">
             <!-- Kotak Material -->
@@ -99,7 +110,8 @@
             </div>
         </div>
 
-        <!-- Rincian Material (Hidden by Default) -->
+        <!-- Rincian Daftar Expandable -->
+        <!-- Rincian Material -->
         <div id="wrap-detail-material" class="hidden mt-6 animate-[fadeIn_0.3s_ease-in-out]">
             <h3 class="font-semibold text-gray-700 mb-3 flex items-center"><i class="fas fa-boxes text-orange-500 mr-2"></i>Rincian Material Utama</h3>
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-2 mb-4">
@@ -107,7 +119,7 @@
             </div>
         </div>
 
-        <!-- Rincian Gaji (Hidden by Default) -->
+        <!-- Rincian Gaji -->
         <div id="wrap-detail-gaji" class="hidden mt-6 animate-[fadeIn_0.3s_ease-in-out]">
             <h3 class="font-semibold text-gray-700 mb-3 flex items-center"><i class="fas fa-users text-green-500 mr-2"></i>Rincian Gaji Pekerja</h3>
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-2 mb-4">
@@ -115,7 +127,7 @@
             </div>
         </div>
 
-        <!-- Rincian Bahan (Hidden by Default) -->
+        <!-- Rincian Bahan -->
         <div id="wrap-detail-bahan" class="hidden mt-6 animate-[fadeIn_0.3s_ease-in-out]">
             <h3 class="font-semibold text-gray-700 mb-3 flex items-center"><i class="fas fa-hammer text-purple-500 mr-2"></i>Rincian Bahan Bangunan</h3>
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-2 mb-4">
@@ -131,28 +143,28 @@
             <form id="form-material" onsubmit="handleFormSubmit(event, 'material')">
                 <div class="mb-3">
                     <label class="block text-xs text-gray-500 mb-1">Tanggal</label>
-                    <input type="date" id="material-date" required class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-orange-500 outline-none">
+                    <input type="date" id="material-date" required class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-orange-500 outline-none bg-gray-50 focus:bg-white transition-colors">
                 </div>
                 <div class="mb-3">
                     <label class="block text-xs text-gray-500 mb-1">Lokasi Proyek</label>
-                    <select id="material-location" required class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-orange-500 outline-none select-location">
+                    <select id="material-location" required class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-orange-500 outline-none select-location bg-gray-50 focus:bg-white transition-colors">
                         <option value="">Pilih Lokasi...</option>
                     </select>
                 </div>
                 <div class="mb-3">
                     <label class="block text-xs text-gray-500 mb-1">Nama Material</label>
-                    <select id="material-name" required class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-orange-500 outline-none select-material">
+                    <select id="material-name" required class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-orange-500 outline-none select-material bg-gray-50 focus:bg-white transition-colors">
                         <option value="">Pilih Material...</option>
                     </select>
                 </div>
                 <div class="grid grid-cols-2 gap-3 mb-4">
                     <div>
                         <label class="block text-xs text-gray-500 mb-1">Jumlah</label>
-                        <input type="text" id="material-qty" required placeholder="Cth: 5" class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-orange-500 outline-none">
+                        <input type="text" id="material-qty" required placeholder="Cth: 5" class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-orange-500 outline-none bg-gray-50 focus:bg-white transition-colors">
                     </div>
                     <div>
                         <label class="block text-xs text-gray-500 mb-1">Harga Satuan</label>
-                        <input type="number" id="material-price" required min="0" class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-orange-500 outline-none">
+                        <input type="number" id="material-price" required min="0" class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-orange-500 outline-none bg-gray-50 focus:bg-white transition-colors">
                     </div>
                 </div>
                 <button type="submit" class="w-full bg-orange-500 text-white rounded-lg p-2 font-medium hover:bg-orange-600 transition shadow-sm hover:shadow-md">Simpan Data</button>
@@ -177,23 +189,23 @@
             <form id="form-gaji" onsubmit="handleFormSubmit(event, 'gaji')">
                 <div class="mb-3">
                     <label class="block text-xs text-gray-500 mb-1">Tanggal Pembayaran</label>
-                    <input type="date" id="gaji-date" required class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-green-500 outline-none">
+                    <input type="date" id="gaji-date" required class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-green-500 outline-none bg-gray-50 focus:bg-white transition-colors">
                 </div>
                 <div class="mb-3">
                     <label class="block text-xs text-gray-500 mb-1">Lokasi Proyek</label>
-                    <select id="gaji-location" required class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-green-500 outline-none select-location">
+                    <select id="gaji-location" required class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-green-500 outline-none select-location bg-gray-50 focus:bg-white transition-colors">
                         <option value="">Pilih Lokasi...</option>
                     </select>
                 </div>
                 <div class="mb-3">
                     <label class="block text-xs text-gray-500 mb-1">Nama Pekerja / Tukang</label>
-                    <select id="gaji-name" required class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-green-500 outline-none select-worker">
+                    <select id="gaji-name" required class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-green-500 outline-none select-worker bg-gray-50 focus:bg-white transition-colors">
                         <option value="">Pilih Pekerja...</option>
                     </select>
                 </div>
                 <div class="mb-4">
                     <label class="block text-xs text-gray-500 mb-1">Total Gaji Dibayar</label>
-                    <input type="number" id="gaji-total" required min="0" class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-green-500 outline-none">
+                    <input type="number" id="gaji-total" required min="0" class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-green-500 outline-none bg-gray-50 focus:bg-white transition-colors">
                 </div>
                 <button type="submit" class="w-full bg-green-600 text-white rounded-lg p-2 font-medium hover:bg-green-700 transition shadow-sm hover:shadow-md">Simpan Data</button>
             </form>
@@ -217,28 +229,28 @@
             <form id="form-bahan" onsubmit="handleFormSubmit(event, 'bahan')">
                 <div class="mb-3">
                     <label class="block text-xs text-gray-500 mb-1">Tanggal</label>
-                    <input type="date" id="bahan-date" required class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-purple-500 outline-none">
+                    <input type="date" id="bahan-date" required class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-purple-500 outline-none bg-gray-50 focus:bg-white transition-colors">
                 </div>
                 <div class="mb-3">
                     <label class="block text-xs text-gray-500 mb-1">Lokasi Proyek</label>
-                    <select id="bahan-location" required class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-purple-500 outline-none select-location">
+                    <select id="bahan-location" required class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-purple-500 outline-none select-location bg-gray-50 focus:bg-white transition-colors">
                         <option value="">Pilih Lokasi...</option>
                     </select>
                 </div>
                 <div class="mb-3">
                     <label class="block text-xs text-gray-500 mb-1">Nama Bahan</label>
-                    <select id="bahan-name" required class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-purple-500 outline-none select-supply">
+                    <select id="bahan-name" required class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-purple-500 outline-none select-supply bg-gray-50 focus:bg-white transition-colors">
                         <option value="">Pilih Bahan...</option>
                     </select>
                 </div>
                 <div class="grid grid-cols-2 gap-3 mb-4">
                     <div>
                         <label class="block text-xs text-gray-500 mb-1">Jumlah</label>
-                        <input type="text" id="bahan-qty" required placeholder="Cth: 10" class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-purple-500 outline-none">
+                        <input type="text" id="bahan-qty" required placeholder="Cth: 10" class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-purple-500 outline-none bg-gray-50 focus:bg-white transition-colors">
                     </div>
                     <div>
                         <label class="block text-xs text-gray-500 mb-1">Harga Satuan</label>
-                        <input type="number" id="bahan-price" required min="0" class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-purple-500 outline-none">
+                        <input type="number" id="bahan-price" required min="0" class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-purple-500 outline-none bg-gray-50 focus:bg-white transition-colors">
                     </div>
                 </div>
                 <button type="submit" class="w-full bg-purple-600 text-white rounded-lg p-2 font-medium hover:bg-purple-700 transition shadow-sm hover:shadow-md">Simpan Data</button>
@@ -259,7 +271,7 @@
     <main id="view-pengaturan" class="view-section p-4">
         <div class="bg-blue-50 p-4 rounded-xl mb-4 border border-blue-100 text-sm text-blue-800 leading-relaxed shadow-sm">
             <strong class="block mb-1"><i class="fas fa-cloud text-blue-600 mr-1"></i> Info Cloud Sinkronisasi:</strong> 
-            Masukkan URL Web App Google Apps Script untuk menghubungkan dan mencadangkan data otomatis ke Spreadsheet online.
+            Masukkan URL Web App Google Apps Script untuk menghubungkan dan mencadangkan data ke Excel online.
         </div>
         
         <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-6">
@@ -281,8 +293,8 @@
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
                 <h3 class="font-semibold mb-2 text-sm text-gray-700 border-b pb-2"><i class="fas fa-map-marker-alt text-blue-500 mr-2"></i>Master Lokasi Proyek</h3>
                 <div class="flex gap-2 mb-3">
-                    <input type="text" id="new-location" placeholder="Cth: Proyek Perumahan A" class="min-w-0 flex-1 border rounded-lg p-2 text-sm outline-none focus:ring-1 focus:ring-blue-500">
-                    <button onclick="addMaster('locations', 'new-location', null)" class="shrink-0 w-10 h-10 bg-blue-600 text-white flex justify-center items-center rounded-lg text-sm hover:bg-blue-700 transition"><i class="fas fa-plus"></i></button>
+                    <input type="text" id="new-location" placeholder="Cth: Proyek Perumahan A" class="min-w-0 flex-1 border rounded-lg p-2 text-sm outline-none focus:ring-1 focus:ring-blue-500 bg-gray-50 focus:bg-white">
+                    <button onclick="addMaster('locations', 'new-location', null)" class="shrink-0 w-10 h-10 bg-blue-600 text-white flex justify-center items-center rounded-lg text-sm hover:bg-blue-700 transition shadow-sm"><i class="fas fa-plus"></i></button>
                 </div>
                 <div id="list-locations" class="flex flex-wrap gap-2"></div>
             </div>
@@ -291,9 +303,9 @@
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
                 <h3 class="font-semibold mb-2 text-sm text-gray-700 border-b pb-2"><i class="fas fa-boxes text-orange-500 mr-2"></i>Master Material</h3>
                 <div class="flex gap-2 mb-3">
-                    <input type="text" id="new-material" placeholder="Nama (cth: Pasir)" class="min-w-0 flex-[2] border rounded-lg p-2 text-sm outline-none focus:ring-1 focus:ring-orange-500">
-                    <input type="text" id="new-material-unit" placeholder="Satuan (res)" class="min-w-0 flex-[1] border rounded-lg p-2 text-sm outline-none focus:ring-1 focus:ring-orange-500">
-                    <button onclick="addMaster('materials', 'new-material', 'new-material-unit')" class="shrink-0 w-10 h-10 bg-orange-500 text-white flex justify-center items-center rounded-lg text-sm hover:bg-orange-600 transition"><i class="fas fa-plus"></i></button>
+                    <input type="text" id="new-material" placeholder="Nama (cth: Pasir)" class="min-w-0 flex-[2] border rounded-lg p-2 text-sm outline-none focus:ring-1 focus:ring-orange-500 bg-gray-50 focus:bg-white">
+                    <input type="text" id="new-material-unit" placeholder="Satuan (res)" class="min-w-0 flex-[1] border rounded-lg p-2 text-sm outline-none focus:ring-1 focus:ring-orange-500 bg-gray-50 focus:bg-white">
+                    <button onclick="addMaster('materials', 'new-material', 'new-material-unit')" class="shrink-0 w-10 h-10 bg-orange-500 text-white flex justify-center items-center rounded-lg text-sm hover:bg-orange-600 transition shadow-sm"><i class="fas fa-plus"></i></button>
                 </div>
                 <div id="list-materials" class="flex flex-wrap gap-2"></div>
             </div>
@@ -302,9 +314,9 @@
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
                 <h3 class="font-semibold mb-2 text-sm text-gray-700 border-b pb-2"><i class="fas fa-hammer text-purple-500 mr-2"></i>Master Bahan Bangunan</h3>
                 <div class="flex gap-2 mb-3">
-                    <input type="text" id="new-supply" placeholder="Nama (cth: Paku)" class="min-w-0 flex-[2] border rounded-lg p-2 text-sm outline-none focus:ring-1 focus:ring-purple-500">
-                    <input type="text" id="new-supply-unit" placeholder="Satuan (kg)" class="min-w-0 flex-[1] border rounded-lg p-2 text-sm outline-none focus:ring-1 focus:ring-purple-500">
-                    <button onclick="addMaster('supplies', 'new-supply', 'new-supply-unit')" class="shrink-0 w-10 h-10 bg-purple-600 text-white flex justify-center items-center rounded-lg text-sm hover:bg-purple-700 transition"><i class="fas fa-plus"></i></button>
+                    <input type="text" id="new-supply" placeholder="Nama (cth: Paku)" class="min-w-0 flex-[2] border rounded-lg p-2 text-sm outline-none focus:ring-1 focus:ring-purple-500 bg-gray-50 focus:bg-white">
+                    <input type="text" id="new-supply-unit" placeholder="Satuan (kg)" class="min-w-0 flex-[1] border rounded-lg p-2 text-sm outline-none focus:ring-1 focus:ring-purple-500 bg-gray-50 focus:bg-white">
+                    <button onclick="addMaster('supplies', 'new-supply', 'new-supply-unit')" class="shrink-0 w-10 h-10 bg-purple-600 text-white flex justify-center items-center rounded-lg text-sm hover:bg-purple-700 transition shadow-sm"><i class="fas fa-plus"></i></button>
                 </div>
                 <div id="list-supplies" class="flex flex-wrap gap-2"></div>
             </div>
@@ -313,8 +325,8 @@
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
                 <h3 class="font-semibold mb-2 text-sm text-gray-700 border-b pb-2"><i class="fas fa-users text-green-500 mr-2"></i>Master Gaji Tukang</h3>
                 <div class="flex gap-2 mb-3">
-                    <input type="text" id="new-worker" placeholder="Cth: Pak Budi, Mandor" class="min-w-0 flex-1 border rounded-lg p-2 text-sm outline-none focus:ring-1 focus:ring-green-500">
-                    <button onclick="addMaster('workers', 'new-worker', null)" class="shrink-0 w-10 h-10 bg-green-600 text-white flex justify-center items-center rounded-lg text-sm hover:bg-green-700 transition"><i class="fas fa-plus"></i></button>
+                    <input type="text" id="new-worker" placeholder="Cth: Pak Budi, Mandor" class="min-w-0 flex-1 border rounded-lg p-2 text-sm outline-none focus:ring-1 focus:ring-green-500 bg-gray-50 focus:bg-white">
+                    <button onclick="addMaster('workers', 'new-worker', null)" class="shrink-0 w-10 h-10 bg-green-600 text-white flex justify-center items-center rounded-lg text-sm hover:bg-green-700 transition shadow-sm"><i class="fas fa-plus"></i></button>
                 </div>
                 <div id="list-workers" class="flex flex-wrap gap-2"></div>
             </div>
@@ -325,7 +337,7 @@
         </div>
     </main>
 
-    <div id="install-prompt" class="fixed bottom-24 left-1/2 transform -translate-x-1/2 w-[90%] max-w-sm bg-white rounded-xl shadow-[0_0_20px_rgba(0,0,0,0.15)] border border-blue-100 p-4 z-[60] hidden flex flex-col sm:flex-row items-center gap-3 transition-all duration-500 translate-y-full opacity-0">
+    <div id="install-prompt" class="fixed bottom-20 left-1/2 transform -translate-x-1/2 w-[90%] max-w-sm bg-white rounded-xl shadow-[0_0_20px_rgba(0,0,0,0.15)] border border-blue-100 p-4 z-[60] hidden flex flex-col sm:flex-row items-center gap-3 transition-all duration-500 translate-y-full opacity-0">
         <div class="flex-shrink-0 bg-blue-100 text-blue-600 w-10 h-10 flex items-center justify-center rounded-lg">
             <i class="fas fa-download text-xl"></i>
         </div>
@@ -373,6 +385,29 @@
             <div class="p-4 overflow-y-auto flex-1 pb-10" id="history-modal-content"></div>
         </div>
     </div>
+
+    <div id="date-filter-modal" class="fixed inset-0 bg-black bg-opacity-60 z-[100] hidden items-end sm:items-center justify-center backdrop-blur-sm">
+        <div class="bg-white w-full sm:max-w-sm rounded-t-2xl sm:rounded-2xl flex flex-col shadow-2xl modal-content-animate overflow-hidden p-5">
+            <div class="flex justify-between items-center mb-4 border-b pb-3 border-gray-100">
+                <h3 class="font-bold text-gray-800"><i class="fas fa-filter text-blue-500 mr-2"></i>Filter Rentang Waktu</h3>
+                <button onclick="closeDateFilterModal()" class="text-gray-400 hover:text-red-500 transition"><i class="fas fa-times text-lg"></i></button>
+            </div>
+            <div class="space-y-4 mb-6">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Dari Tanggal</label>
+                    <input type="date" id="filter-start" class="w-full border border-gray-200 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 focus:bg-white transition-colors">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Sampai Tanggal</label>
+                    <input type="date" id="filter-end" class="w-full border border-gray-200 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-blue-500 bg-gray-50 focus:bg-white transition-colors">
+                </div>
+            </div>
+            <div class="flex gap-3">
+                <button onclick="resetDateFilter()" class="flex-1 bg-gray-100 text-gray-700 py-3 rounded-xl font-medium text-sm hover:bg-gray-200 transition">Reset Waktu</button>
+                <button onclick="applyDateFilter()" class="flex-1 bg-blue-600 text-white py-3 rounded-xl font-medium text-sm hover:bg-blue-700 shadow-md transition">Terapkan Filter</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -388,14 +423,15 @@
     };
 
     let currentDashboardLocation = 'Semua';
+    let filterStartDate = '';
+    let filterEndDate = '';
 
-    // PWA Service Worker Registration
     const isLocalProtocol = window.location.protocol === 'file:' || window.location.protocol === 'blob:' || window.location.protocol === 'about:';
     if ('serviceWorker' in navigator && !isLocalProtocol) {
         window.addEventListener('load', () => {
             navigator.serviceWorker.register('./sw.js')
             .then(reg => console.log('Service Worker berhasil terdaftar.', reg.scope))
-            .catch(err => console.log('Peringatan SW:', err));
+            .catch(err => console.log('Peringatan SW (Normal jika di localhost/editor):', err));
         });
     }
 
@@ -410,7 +446,7 @@
                 promptEl.classList.remove('translate-y-full', 'opacity-0');
                 promptEl.classList.add('translate-y-0', 'opacity-100');
             }, 50);
-        }, 2500);
+        }, 3000);
     });
 
     function dismissInstallPWA() {
@@ -437,6 +473,7 @@
     const formatRp = (angka) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(angka || 0);
     
     const formatDate = (dateStr) => {
+        if(!dateStr) return '';
         const d = new Date(dateStr);
         if(isNaN(d.getTime())) return dateStr; 
         return `${d.getDate().toString().padStart(2,'0')}/${(d.getMonth()+1).toString().padStart(2,'0')}/${d.getFullYear().toString().substring(2,4)}`;
@@ -493,6 +530,7 @@
         updateDropdowns();
         updateTables();
         renderDashboardTabs();
+        updateDateFilterLabel();
         updateDashboard();
         updateSettingsMaster();
     }
@@ -548,20 +586,63 @@
             activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
         }
     }
+    
+    // --- FUNGSI FILTER TANGGAL ---
+    function openDateFilterModal() {
+        document.getElementById('filter-start').value = filterStartDate;
+        document.getElementById('filter-end').value = filterEndDate;
+        const modal = document.getElementById('date-filter-modal');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+    }
+
+    function closeDateFilterModal() {
+        const modal = document.getElementById('date-filter-modal');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    }
+
+    function applyDateFilter() {
+        filterStartDate = document.getElementById('filter-start').value;
+        filterEndDate = document.getElementById('filter-end').value;
+        closeDateFilterModal();
+        updateDateFilterLabel();
+        updateDashboard();
+        showToast('Filter Waktu Diterapkan');
+    }
+
+    function resetDateFilter() {
+        filterStartDate = '';
+        filterEndDate = '';
+        closeDateFilterModal();
+        updateDateFilterLabel();
+        updateDashboard();
+        showToast('Filter Waktu Dihapus');
+    }
+
+    function updateDateFilterLabel() {
+        const label = document.getElementById('date-filter-label');
+        if (!filterStartDate && !filterEndDate) {
+            label.textContent = "Semua Waktu";
+        } else if (filterStartDate && filterEndDate) {
+            label.textContent = `${formatDate(filterStartDate)} - ${formatDate(filterEndDate)}`;
+        } else if (filterStartDate) {
+            label.textContent = `Sejak ${formatDate(filterStartDate)}`;
+        } else if (filterEndDate) {
+            label.textContent = `S/d ${formatDate(filterEndDate)}`;
+        }
+    }
 
     function toggleDashboardDetail(type) {
         const wrap = document.getElementById(`wrap-detail-${type}`);
         const isHidden = wrap.classList.contains('hidden');
         
-        // Sembunyikan semua dulu (sistem akordion)
         document.getElementById('wrap-detail-material').classList.add('hidden');
         document.getElementById('wrap-detail-gaji').classList.add('hidden');
         document.getElementById('wrap-detail-bahan').classList.add('hidden');
         
-        // Tampilkan yang diklik jika sebelumnya tersembunyi
         if (isHidden) {
             wrap.classList.remove('hidden');
-            // Sedikit delay agar DOM siap sebelum di-scroll
             setTimeout(() => {
                 wrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }, 50);
@@ -569,13 +650,23 @@
     }
 
     function updateDashboard() {
-        document.getElementById('dash-lokasi-label').textContent = currentDashboardLocation === 'Semua' ? 'Semua Proyek' : `Proyek: ${currentDashboardLocation}`;
+        document.getElementById('dash-lokasi-title').textContent = currentDashboardLocation === 'Semua' ? 'Keseluruhan Proyek' : `Proyek: ${currentDashboardLocation}`;
 
         const getFilteredTx = (type) => {
             return appData.transactions[type].filter(tx => {
-                if (currentDashboardLocation === 'Semua') return true;
-                const txLoc = tx.location || 'Umum';
-                return txLoc === currentDashboardLocation;
+                // Filter Lokasi
+                let matchLoc = true;
+                if (currentDashboardLocation !== 'Semua') {
+                    const txLoc = tx.location || 'Umum';
+                    matchLoc = (txLoc === currentDashboardLocation);
+                }
+                
+                // Filter Waktu
+                let matchDate = true;
+                if (filterStartDate) matchDate = matchDate && tx.date >= filterStartDate;
+                if (filterEndDate) matchDate = matchDate && tx.date <= filterEndDate;
+
+                return matchLoc && matchDate;
             });
         };
 
@@ -611,14 +702,14 @@
 
             const container = document.getElementById(containerId);
             if(Object.keys(summary).length === 0) {
-                container.innerHTML = `<div class="text-center text-xs text-gray-400 py-4 bg-gray-50 rounded-lg">Tidak ada data untuk lokasi ini</div>`;
+                container.innerHTML = `<div class="text-center text-xs text-gray-400 py-4 bg-gray-50 rounded-lg">Tidak ada data untuk lokasi/waktu ini</div>`;
             } else {
                 container.innerHTML = Object.keys(summary).map(name => {
                     let subText = "";
                     if (type === 'gaji') {
                         subText = `Dibayar: <span class="font-bold text-gray-700">${summary[name].count} kali</span>`;
                     } else {
-                        let displayUnit = summary[name].unit || 'item';
+                        let displayUnit = summary[name].unit || '';
                         subText = `Terkumpul: <span class="font-bold text-gray-700">${summary[name].count} ${displayUnit}</span>`;
                     }
 
@@ -650,7 +741,7 @@
         
         let iconType = type === 'gaji' ? '<i class="fas fa-users text-green-500 mr-2"></i>' : type === 'material' ? '<i class="fas fa-boxes text-orange-500 mr-2"></i>' : '<i class="fas fa-hammer text-purple-500 mr-2"></i>';
         
-        let subTitleLocation = currentDashboardLocation === 'Semua' ? 'Keseluruhan Proyek' : `Proyek: ${currentDashboardLocation}`;
+        let subTitleLocation = currentDashboardLocation === 'Semua' ? 'Semua Proyek' : `${currentDashboardLocation}`;
 
         title.innerHTML = `
             <div>
@@ -662,7 +753,13 @@
         const historyData = appData.transactions[type].filter(tx => {
             const matchName = tx.name === itemName;
             const matchLoc = currentDashboardLocation === 'Semua' ? true : (tx.location || 'Umum') === currentDashboardLocation;
-            return matchName && matchLoc;
+            
+            // Filter waktu harus cocok dengan pop-up
+            let matchDate = true;
+            if (filterStartDate) matchDate = matchDate && tx.date >= filterStartDate;
+            if (filterEndDate) matchDate = matchDate && tx.date <= filterEndDate;
+            
+            return matchName && matchLoc && matchDate;
         });
         
         if (historyData.length === 0) {
@@ -757,7 +854,6 @@
 
         if (type === 'material' || type === 'bahan') {
             let rawInput = document.getElementById(`${type}-qty`).value.trim();
-            
             let numericMatch = rawInput.match(/[0-9.,]+/);
             let numericQty = numericMatch ? parseFloat(numericMatch[0].replace(',', '.')) : 1;
             if (isNaN(numericQty)) numericQty = 1; 
@@ -768,7 +864,6 @@
             let masterItem = masterList.find(m => (m.name || m) === newTx.name);
             
             let textOnly = rawInput.replace(/[0-9.,]/g, '').trim();
-            
             if(textOnly) {
                 unitToSave = textOnly; 
             } else if (masterItem && masterItem.unit) {
@@ -835,7 +930,7 @@
                 showToast('Master berhasil ditambah!');
                 if(appData.gasUrl && navigator.onLine) syncData(true);
             } else {
-                showToast('Peringatan: Nama sudah ada di Master!');
+                showToast('Peringatan: Nama sudah ada!');
             }
         }
     }
@@ -852,7 +947,7 @@
                     <i class="fas fa-trash-alt text-2xl"></i>
                 </div>
                 <h3 class="text-lg font-bold text-gray-800 mb-2">Hapus Master?</h3>
-                <p class="text-sm text-gray-500 mb-6">Hapus <strong>"${displayStr}"</strong> dari daftar pilihan?</p>
+                <p class="text-sm text-gray-500 mb-6">Hapus <strong>"${displayStr}"</strong> dari daftar?</p>
                 <div class="flex gap-3">
                     <button id="btn-cancel-del" class="flex-1 bg-gray-100 text-gray-700 py-2.5 rounded-xl font-medium hover:bg-gray-200 transition">Batal</button>
                     <button id="btn-confirm-del" class="flex-1 bg-red-600 text-white py-2.5 rounded-xl font-medium hover:bg-red-700 shadow-md transition">Hapus</button>
@@ -865,7 +960,7 @@
         document.getElementById('btn-confirm-del').onclick = () => {
             appData.settings[settingKey].splice(index, 1);
             saveData(); 
-            showToast('Master berhasil dihapus!');
+            showToast('Master dihapus!');
             if(appData.gasUrl && navigator.onLine) syncData(true);
             modal.remove();
         };
@@ -915,7 +1010,7 @@
                 }
             } catch(err) {
                 if(!isSilent) {
-                    showToast('Gagal terhubung. Pastikan URL & Akses "Anyone".');
+                    showToast('Gagal terhubung. Pastikan Akses URL "Anyone".');
                     console.error('Fetch Error:', err);
                 }
             } finally {
@@ -933,11 +1028,11 @@
                     <div class="w-16 h-16 bg-indigo-100 text-indigo-500 rounded-full flex items-center justify-center mx-auto mb-4">
                         <i class="fas fa-cloud-download-alt text-2xl"></i>
                     </div>
-                    <h3 class="text-lg font-bold text-gray-800 mb-2">Tarik Data Manual?</h3>
-                    <p class="text-sm text-gray-500 mb-6">Tindakan ini akan me-refresh aplikasi dan menyamakan datanya dengan isi di Spreadsheet.</p>
+                    <h3 class="text-lg font-bold text-gray-800 mb-2">Tarik Data Excel?</h3>
+                    <p class="text-sm text-gray-500 mb-6">Tindakan ini akan menyamakan isi aplikasi HP dengan isi Spreadsheet (termasuk Data Master).</p>
                     <div class="flex gap-3">
                         <button id="btn-cancel-pull" class="flex-1 bg-gray-100 text-gray-700 py-2.5 rounded-xl font-medium hover:bg-gray-200 transition">Batal</button>
-                        <button id="btn-confirm-pull" class="flex-1 bg-indigo-600 text-white py-2.5 rounded-xl font-medium hover:bg-indigo-700 shadow-md transition">Tarik Sekarang</button>
+                        <button id="btn-confirm-pull" class="flex-1 bg-indigo-600 text-white py-2.5 rounded-xl font-medium hover:bg-indigo-700 shadow-md transition">Tarik Data</button>
                     </div>
                 </div>
             `;
@@ -986,7 +1081,7 @@
                 if(!isSilent) showToast('Error Server: ' + result.message);
             }
         } catch(err) {
-            if(!isSilent) showToast('Gagal terhubung ke Cloud.');
+            if(!isSilent) showToast('Gagal terhubung. Cek URL "Anyone"');
             console.error(err);
         } finally {
             syncIcon.classList.remove('fa-spin');
@@ -1002,10 +1097,10 @@
                     <i class="fas fa-exclamation-triangle text-3xl"></i>
                 </div>
                 <h3 class="text-lg font-bold text-gray-800 mb-2 text-red-600">Hapus Semua Data?</h3>
-                <p class="text-sm text-gray-500 mb-6">Tindakan ini akan mereset aplikasi HP seperti baru dan menghapus data lokal permanen (Data Excel tetap aman). Lanjutkan?</p>
+                <p class="text-sm text-gray-500 mb-6">Tindakan ini mereset HP seperti baru (Data Excel tetap aman). Lanjutkan?</p>
                 <div class="flex gap-3">
                     <button id="btn-cancel-reset" class="flex-1 bg-gray-100 text-gray-700 py-2.5 rounded-xl font-medium hover:bg-gray-200 transition">Batal</button>
-                    <button id="btn-confirm-reset" class="flex-1 bg-red-600 text-white py-2.5 rounded-xl font-medium hover:bg-red-700 shadow-md transition">Reset Permanen</button>
+                    <button id="btn-confirm-reset" class="flex-1 bg-red-600 text-white py-2.5 rounded-xl font-medium hover:bg-red-700 shadow-md transition">Reset</button>
                 </div>
             </div>
         `;
