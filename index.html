@@ -16,11 +16,14 @@
         body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; overflow-x: hidden; }
         .app-container { max-width: 480px; margin: 0 auto; background: white; min-height: 100vh; position: relative; box-shadow: 0 0 20px rgba(0,0,0,0.05); overflow-x: hidden; }
         
-        /* Penambahan !important dan margin bottom agar menu bar tidak menutupi konten */
         .view-section { display: none; padding-bottom: 110px !important; animation: fadeIn 0.3s ease-in-out; }
         .view-section.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         ::-webkit-scrollbar { width: 0px; background: transparent; }
+        
+        /* Utility untuk Hide Scrollbar tapi tetap bisa di-scroll (untuk tab Dashboard) */
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
         .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #333; color: white; padding: 10px 20px; border-radius: 8px; z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.3s; font-size: 14px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); white-space: nowrap;}
         .toast.show { opacity: 1; }
@@ -39,6 +42,7 @@
 <div id="toast" class="toast">Notifikasi</div>
 
 <div class="app-container">
+    <!-- HEADER -->
     <header class="bg-blue-600 text-white p-4 sticky top-0 z-40 shadow-md">
         <div class="flex justify-between items-center">
             <h1 class="text-xl font-bold tracking-wide" id="header-title">Dashboard</h1>
@@ -48,84 +52,97 @@
         </div>
     </header>
 
+    <!-- MAIN VIEW: DASHBOARD -->
     <main id="view-dashboard" class="view-section active p-4">
-        <div class="bg-gradient-to-r from-blue-500 to-blue-700 rounded-2xl p-5 text-white shadow-lg mb-6">
-            <p class="text-blue-100 text-sm mb-1">Total Pengeluaran Proyek</p>
-            <h2 class="text-3xl font-bold" id="dash-total-all">Rp 0</h2>
+        
+        <!-- Tab Lokasi Proyek -->
+        <div id="dashboard-tabs" class="flex gap-2 overflow-x-auto mb-4 pb-2 hide-scrollbar items-center">
+            <!-- Render via JS -->
+        </div>
+
+        <div class="bg-gradient-to-r from-blue-500 to-blue-700 rounded-2xl p-5 text-white shadow-lg mb-6 relative overflow-hidden">
+            <div class="absolute top-0 right-0 p-4 opacity-20"><i class="fas fa-chart-line text-6xl"></i></div>
+            <p class="text-blue-100 text-sm mb-1">Total Pengeluaran <span id="dash-lokasi-label" class="font-semibold text-white">Semua Proyek</span></p>
+            <h2 class="text-3xl font-bold relative z-10" id="dash-total-all">Rp 0</h2>
         </div>
         
-        <h3 class="font-semibold text-gray-700 mb-3">Rincian Total Pengeluaran</h3>
+        <h3 class="font-semibold text-gray-700 mb-3 flex items-center"><i class="fas fa-wallet text-blue-500 mr-2"></i>Rincian Total Pengeluaran</h3>
         <div class="grid grid-cols-2 gap-4">
-            <div class="bg-white p-4 rounded-xl shadow border border-gray-100">
+            <div class="bg-white p-4 rounded-xl shadow border border-gray-100 relative overflow-hidden group">
+                <div class="absolute -right-2 -bottom-2 opacity-10 group-hover:scale-110 transition-transform"><i class="fas fa-boxes text-5xl"></i></div>
                 <div class="text-orange-500 mb-2"><i class="fas fa-boxes fa-lg"></i></div>
-                <p class="text-xs text-gray-500">Material Utama</p>
-                <p class="font-bold text-gray-800" id="dash-total-material">Rp 0</p>
+                <p class="text-xs text-gray-500 relative z-10">Material Utama</p>
+                <p class="font-bold text-gray-800 relative z-10" id="dash-total-material">Rp 0</p>
             </div>
-            <div class="bg-white p-4 rounded-xl shadow border border-gray-100">
+            <div class="bg-white p-4 rounded-xl shadow border border-gray-100 relative overflow-hidden group">
+                <div class="absolute -right-2 -bottom-2 opacity-10 group-hover:scale-110 transition-transform"><i class="fas fa-users text-5xl"></i></div>
                 <div class="text-green-500 mb-2"><i class="fas fa-users fa-lg"></i></div>
-                <p class="text-xs text-gray-500">Gaji Tukang</p>
-                <p class="font-bold text-gray-800" id="dash-total-gaji">Rp 0</p>
+                <p class="text-xs text-gray-500 relative z-10">Gaji Tukang</p>
+                <p class="font-bold text-gray-800 relative z-10" id="dash-total-gaji">Rp 0</p>
             </div>
-            <div class="bg-white p-4 rounded-xl shadow border border-gray-100 col-span-2 flex items-center justify-between">
-                <div>
+            <div class="bg-white p-4 rounded-xl shadow border border-gray-100 col-span-2 flex items-center justify-between relative overflow-hidden group">
+                <div class="absolute -right-2 -top-2 opacity-10 group-hover:scale-110 transition-transform"><i class="fas fa-hammer text-6xl"></i></div>
+                <div class="relative z-10">
                     <div class="text-purple-500 mb-2"><i class="fas fa-hammer fa-lg"></i></div>
                     <p class="text-xs text-gray-500">Bahan Bangunan Lainnya</p>
                 </div>
-                <p class="font-bold text-gray-800 text-right text-xl" id="dash-total-bahan">Rp 0</p>
+                <p class="font-bold text-gray-800 text-right text-xl relative z-10" id="dash-total-bahan">Rp 0</p>
             </div>
         </div>
 
-        <h3 class="font-semibold text-gray-700 mt-6 mb-3">Rincian Item Material</h3>
+        <h3 class="font-semibold text-gray-700 mt-6 mb-3 flex items-center"><i class="fas fa-boxes text-orange-500 mr-2"></i>Rincian Material Utama</h3>
         <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-2 mb-4">
             <div id="dash-detail-material" class="divide-y divide-gray-50"></div>
         </div>
 
-        <h3 class="font-semibold text-gray-700 mt-4 mb-3">Rincian Gaji Pekerja</h3>
+        <h3 class="font-semibold text-gray-700 mt-4 mb-3 flex items-center"><i class="fas fa-users text-green-500 mr-2"></i>Rincian Gaji Pekerja</h3>
         <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-2 mb-4">
             <div id="dash-detail-gaji" class="divide-y divide-gray-50"></div>
         </div>
 
-        <h3 class="font-semibold text-gray-700 mt-4 mb-3">Rincian Item Bahan Bangunan</h3>
+        <h3 class="font-semibold text-gray-700 mt-4 mb-3 flex items-center"><i class="fas fa-hammer text-purple-500 mr-2"></i>Rincian Bahan Bangunan</h3>
         <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-2 mb-4">
             <div id="dash-detail-bahan" class="divide-y divide-gray-50"></div>
         </div>
     </main>
 
+    <!-- MAIN VIEW: MATERIAL -->
     <main id="view-material" class="view-section p-4">
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-6">
-            <h3 class="font-semibold mb-3 border-b pb-2">Input Material Baru</h3>
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-6 relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-1 h-full bg-orange-500"></div>
+            <h3 class="font-semibold mb-3 border-b pb-2 text-gray-800"><i class="fas fa-boxes text-orange-500 mr-2"></i>Input Material Baru</h3>
             <form id="form-material" onsubmit="handleFormSubmit(event, 'material')">
                 <div class="mb-3">
                     <label class="block text-xs text-gray-500 mb-1">Tanggal</label>
-                    <input type="date" id="material-date" required class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                    <input type="date" id="material-date" required class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-orange-500 outline-none">
                 </div>
                 <div class="mb-3">
                     <label class="block text-xs text-gray-500 mb-1">Lokasi Proyek</label>
-                    <select id="material-location" required class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none select-location">
+                    <select id="material-location" required class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-orange-500 outline-none select-location">
                         <option value="">Pilih Lokasi...</option>
                     </select>
                 </div>
                 <div class="mb-3">
                     <label class="block text-xs text-gray-500 mb-1">Nama Material</label>
-                    <select id="material-name" required class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none select-material">
+                    <select id="material-name" required class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-orange-500 outline-none select-material">
                         <option value="">Pilih Material...</option>
                     </select>
                 </div>
                 <div class="grid grid-cols-2 gap-3 mb-4">
                     <div>
-                        <label class="block text-xs text-gray-500 mb-1">Jumlah Angka</label>
-                        <input type="text" id="material-qty" required placeholder="Cth: 5" class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                        <label class="block text-xs text-gray-500 mb-1">Jumlah</label>
+                        <input type="text" id="material-qty" required placeholder="Cth: 5" class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-orange-500 outline-none">
                     </div>
                     <div>
                         <label class="block text-xs text-gray-500 mb-1">Harga Satuan</label>
-                        <input type="number" id="material-price" required min="0" class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                        <input type="number" id="material-price" required min="0" class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-orange-500 outline-none">
                     </div>
                 </div>
-                <button type="submit" class="w-full bg-blue-600 text-white rounded-lg p-2 font-medium hover:bg-blue-700 transition shadow-sm hover:shadow-md">Simpan Data</button>
+                <button type="submit" class="w-full bg-orange-500 text-white rounded-lg p-2 font-medium hover:bg-orange-600 transition shadow-sm hover:shadow-md">Simpan Data</button>
             </form>
         </div>
         
-        <h3 class="font-semibold text-gray-700 mb-3">Histori Material</h3>
+        <h3 class="font-semibold text-gray-700 mb-3"><i class="fas fa-history text-gray-400 mr-2"></i>Histori Material</h3>
         <div class="overflow-x-auto bg-white rounded-xl shadow-sm border border-gray-200">
             <table class="w-full text-left text-sm">
                 <thead class="bg-gray-50 text-gray-600 border-b">
@@ -136,35 +153,37 @@
         </div>
     </main>
 
+    <!-- MAIN VIEW: GAJI -->
     <main id="view-gaji" class="view-section p-4">
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-6">
-            <h3 class="font-semibold mb-3 border-b pb-2">Input Gaji Pekerja</h3>
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-6 relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-1 h-full bg-green-500"></div>
+            <h3 class="font-semibold mb-3 border-b pb-2 text-gray-800"><i class="fas fa-users text-green-500 mr-2"></i>Input Gaji Pekerja</h3>
             <form id="form-gaji" onsubmit="handleFormSubmit(event, 'gaji')">
                 <div class="mb-3">
                     <label class="block text-xs text-gray-500 mb-1">Tanggal Pembayaran</label>
-                    <input type="date" id="gaji-date" required class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                    <input type="date" id="gaji-date" required class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-green-500 outline-none">
                 </div>
                 <div class="mb-3">
                     <label class="block text-xs text-gray-500 mb-1">Lokasi Proyek</label>
-                    <select id="gaji-location" required class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none select-location">
+                    <select id="gaji-location" required class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-green-500 outline-none select-location">
                         <option value="">Pilih Lokasi...</option>
                     </select>
                 </div>
                 <div class="mb-3">
                     <label class="block text-xs text-gray-500 mb-1">Nama Pekerja / Tukang</label>
-                    <select id="gaji-name" required class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none select-worker">
+                    <select id="gaji-name" required class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-green-500 outline-none select-worker">
                         <option value="">Pilih Pekerja...</option>
                     </select>
                 </div>
                 <div class="mb-4">
                     <label class="block text-xs text-gray-500 mb-1">Total Gaji Dibayar</label>
-                    <input type="number" id="gaji-total" required min="0" class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                    <input type="number" id="gaji-total" required min="0" class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-green-500 outline-none">
                 </div>
                 <button type="submit" class="w-full bg-green-600 text-white rounded-lg p-2 font-medium hover:bg-green-700 transition shadow-sm hover:shadow-md">Simpan Data</button>
             </form>
         </div>
         
-        <h3 class="font-semibold text-gray-700 mb-3">Histori Pembayaran Gaji</h3>
+        <h3 class="font-semibold text-gray-700 mb-3"><i class="fas fa-history text-gray-400 mr-2"></i>Histori Pembayaran Gaji</h3>
         <div class="overflow-x-auto bg-white rounded-xl shadow-sm border border-gray-200">
             <table class="w-full text-left text-sm">
                 <thead class="bg-gray-50 text-gray-600 border-b">
@@ -175,41 +194,43 @@
         </div>
     </main>
 
+    <!-- MAIN VIEW: BAHAN -->
     <main id="view-bahan" class="view-section p-4">
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-6">
-            <h3 class="font-semibold mb-3 border-b pb-2">Input Bahan Bangunan</h3>
+        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-6 relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-1 h-full bg-purple-500"></div>
+            <h3 class="font-semibold mb-3 border-b pb-2 text-gray-800"><i class="fas fa-hammer text-purple-500 mr-2"></i>Input Bahan Bangunan</h3>
             <form id="form-bahan" onsubmit="handleFormSubmit(event, 'bahan')">
                 <div class="mb-3">
                     <label class="block text-xs text-gray-500 mb-1">Tanggal</label>
-                    <input type="date" id="bahan-date" required class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                    <input type="date" id="bahan-date" required class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-purple-500 outline-none">
                 </div>
                 <div class="mb-3">
                     <label class="block text-xs text-gray-500 mb-1">Lokasi Proyek</label>
-                    <select id="bahan-location" required class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none select-location">
+                    <select id="bahan-location" required class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-purple-500 outline-none select-location">
                         <option value="">Pilih Lokasi...</option>
                     </select>
                 </div>
                 <div class="mb-3">
                     <label class="block text-xs text-gray-500 mb-1">Nama Bahan</label>
-                    <select id="bahan-name" required class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none select-supply">
+                    <select id="bahan-name" required class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-purple-500 outline-none select-supply">
                         <option value="">Pilih Bahan...</option>
                     </select>
                 </div>
                 <div class="grid grid-cols-2 gap-3 mb-4">
                     <div>
-                        <label class="block text-xs text-gray-500 mb-1">Jumlah Angka</label>
-                        <input type="text" id="bahan-qty" required placeholder="Cth: 10" class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                        <label class="block text-xs text-gray-500 mb-1">Jumlah</label>
+                        <input type="text" id="bahan-qty" required placeholder="Cth: 10" class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-purple-500 outline-none">
                     </div>
                     <div>
                         <label class="block text-xs text-gray-500 mb-1">Harga Satuan</label>
-                        <input type="number" id="bahan-price" required min="0" class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
+                        <input type="number" id="bahan-price" required min="0" class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-purple-500 outline-none">
                     </div>
                 </div>
                 <button type="submit" class="w-full bg-purple-600 text-white rounded-lg p-2 font-medium hover:bg-purple-700 transition shadow-sm hover:shadow-md">Simpan Data</button>
             </form>
         </div>
         
-        <h3 class="font-semibold text-gray-700 mb-3">Histori Bahan Bangunan</h3>
+        <h3 class="font-semibold text-gray-700 mb-3"><i class="fas fa-history text-gray-400 mr-2"></i>Histori Bahan Bangunan</h3>
         <div class="overflow-x-auto bg-white rounded-xl shadow-sm border border-gray-200">
             <table class="w-full text-left text-sm">
                 <thead class="bg-gray-50 text-gray-600 border-b">
@@ -220,6 +241,7 @@
         </div>
     </main>
 
+    <!-- MAIN VIEW: PENGATURAN -->
     <main id="view-pengaturan" class="view-section p-4">
         <div class="bg-blue-50 p-4 rounded-xl mb-4 border border-blue-100 text-sm text-blue-800 leading-relaxed shadow-sm">
             <strong class="block mb-1"><i class="fas fa-cloud text-blue-600 mr-1"></i> Info Cloud Sinkronisasi:</strong> 
@@ -231,54 +253,55 @@
             <input type="text" id="setting-gas-url" placeholder="https://script.google.com/macros/s/..." class="w-full border border-gray-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500 outline-none mb-3 bg-gray-50 focus:bg-white transition-colors">
             
             <div class="grid grid-cols-2 gap-2">
-                <button onclick="saveGasUrl()" class="w-full bg-gray-800 text-white rounded-lg py-2 text-sm font-medium hover:bg-gray-700 transition flex items-center justify-center">
+                <button onclick="saveGasUrl()" class="w-full bg-gray-800 text-white rounded-lg py-2 text-sm font-medium hover:bg-gray-700 transition flex items-center justify-center shadow-sm">
                     <i class="fas fa-save mr-1"></i> Simpan URL
                 </button>
-                <button onclick="pullDataFromCloud()" class="w-full bg-indigo-600 text-white rounded-lg py-2 text-sm font-medium hover:bg-indigo-700 transition flex items-center justify-center">
+                <button onclick="pullDataFromCloud()" class="w-full bg-indigo-600 text-white rounded-lg py-2 text-sm font-medium hover:bg-indigo-700 transition flex items-center justify-center shadow-sm">
                     <i class="fas fa-cloud-download-alt mr-1"></i> Tarik Data
                 </button>
             </div>
         </div>
 
         <div class="space-y-4">
+            
             <!-- Lokasi Master -->
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
-                <h3 class="font-semibold mb-2 text-sm text-gray-700 border-b pb-2">Master Lokasi Proyek</h3>
+                <h3 class="font-semibold mb-2 text-sm text-gray-700 border-b pb-2"><i class="fas fa-map-marker-alt text-blue-500 mr-2"></i>Master Lokasi Proyek</h3>
                 <div class="flex gap-2 mb-3">
                     <input type="text" id="new-location" placeholder="Cth: Proyek Perumahan A" class="min-w-0 flex-1 border rounded-lg p-2 text-sm outline-none focus:ring-1 focus:ring-blue-500">
-                    <button onclick="addMaster('locations', 'new-location', null)" class="shrink-0 w-10 bg-blue-600 text-white flex justify-center items-center rounded-lg text-sm hover:bg-blue-700 transition"><i class="fas fa-plus"></i></button>
+                    <button onclick="addMaster('locations', 'new-location', null)" class="shrink-0 w-10 h-10 bg-blue-600 text-white flex justify-center items-center rounded-lg text-sm hover:bg-blue-700 transition"><i class="fas fa-plus"></i></button>
                 </div>
                 <div id="list-locations" class="flex flex-wrap gap-2"></div>
             </div>
 
             <!-- Material Master -->
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
-                <h3 class="font-semibold mb-2 text-sm text-gray-700 border-b pb-2">Master Material</h3>
+                <h3 class="font-semibold mb-2 text-sm text-gray-700 border-b pb-2"><i class="fas fa-boxes text-orange-500 mr-2"></i>Master Material</h3>
                 <div class="flex gap-2 mb-3">
                     <input type="text" id="new-material" placeholder="Nama (cth: Pasir)" class="min-w-0 flex-[2] border rounded-lg p-2 text-sm outline-none focus:ring-1 focus:ring-orange-500">
                     <input type="text" id="new-material-unit" placeholder="Satuan (res)" class="min-w-0 flex-[1] border rounded-lg p-2 text-sm outline-none focus:ring-1 focus:ring-orange-500">
-                    <button onclick="addMaster('materials', 'new-material', 'new-material-unit')" class="shrink-0 w-10 bg-orange-500 text-white flex justify-center items-center rounded-lg text-sm hover:bg-orange-600 transition"><i class="fas fa-plus"></i></button>
+                    <button onclick="addMaster('materials', 'new-material', 'new-material-unit')" class="shrink-0 w-10 h-10 bg-orange-500 text-white flex justify-center items-center rounded-lg text-sm hover:bg-orange-600 transition"><i class="fas fa-plus"></i></button>
                 </div>
                 <div id="list-materials" class="flex flex-wrap gap-2"></div>
             </div>
 
             <!-- Bahan Master -->
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
-                <h3 class="font-semibold mb-2 text-sm text-gray-700 border-b pb-2">Master Bahan Bangunan</h3>
+                <h3 class="font-semibold mb-2 text-sm text-gray-700 border-b pb-2"><i class="fas fa-hammer text-purple-500 mr-2"></i>Master Bahan Bangunan</h3>
                 <div class="flex gap-2 mb-3">
                     <input type="text" id="new-supply" placeholder="Nama (cth: Paku)" class="min-w-0 flex-[2] border rounded-lg p-2 text-sm outline-none focus:ring-1 focus:ring-purple-500">
                     <input type="text" id="new-supply-unit" placeholder="Satuan (kg)" class="min-w-0 flex-[1] border rounded-lg p-2 text-sm outline-none focus:ring-1 focus:ring-purple-500">
-                    <button onclick="addMaster('supplies', 'new-supply', 'new-supply-unit')" class="shrink-0 w-10 bg-purple-600 text-white flex justify-center items-center rounded-lg text-sm hover:bg-purple-700 transition"><i class="fas fa-plus"></i></button>
+                    <button onclick="addMaster('supplies', 'new-supply', 'new-supply-unit')" class="shrink-0 w-10 h-10 bg-purple-600 text-white flex justify-center items-center rounded-lg text-sm hover:bg-purple-700 transition"><i class="fas fa-plus"></i></button>
                 </div>
                 <div id="list-supplies" class="flex flex-wrap gap-2"></div>
             </div>
 
             <!-- Gaji Master -->
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
-                <h3 class="font-semibold mb-2 text-sm text-gray-700 border-b pb-2">Master Gaji Tukang</h3>
+                <h3 class="font-semibold mb-2 text-sm text-gray-700 border-b pb-2"><i class="fas fa-users text-green-500 mr-2"></i>Master Gaji Tukang</h3>
                 <div class="flex gap-2 mb-3">
                     <input type="text" id="new-worker" placeholder="Cth: Pak Budi, Mandor" class="min-w-0 flex-1 border rounded-lg p-2 text-sm outline-none focus:ring-1 focus:ring-green-500">
-                    <button onclick="addMaster('workers', 'new-worker', null)" class="shrink-0 w-10 bg-green-600 text-white flex justify-center items-center rounded-lg text-sm hover:bg-green-700 transition"><i class="fas fa-plus"></i></button>
+                    <button onclick="addMaster('workers', 'new-worker', null)" class="shrink-0 w-10 h-10 bg-green-600 text-white flex justify-center items-center rounded-lg text-sm hover:bg-green-700 transition"><i class="fas fa-plus"></i></button>
                 </div>
                 <div id="list-workers" class="flex flex-wrap gap-2"></div>
             </div>
@@ -289,6 +312,8 @@
         </div>
     </main>
 
+    <!-- UI COMPONENTS -->
+    
     <!-- PWA Install Prompt Banner -->
     <div id="install-prompt" class="fixed bottom-24 left-1/2 transform -translate-x-1/2 w-[90%] max-w-sm bg-white rounded-xl shadow-[0_0_20px_rgba(0,0,0,0.15)] border border-blue-100 p-4 z-[60] hidden flex flex-col sm:flex-row items-center gap-3 transition-all duration-500 translate-y-full opacity-0">
         <div class="flex-shrink-0 bg-blue-100 text-blue-600 w-10 h-10 flex items-center justify-center rounded-lg">
@@ -304,6 +329,7 @@
         </div>
     </div>
 
+    <!-- Navigation Bar -->
     <nav class="fixed bottom-0 w-full max-w-md bg-white border-t border-gray-200 flex justify-around pb-4 pt-2 px-2 shadow-[0_-5px_15px_rgba(0,0,0,0.05)] z-40">
         <button onclick="switchView('dashboard')" class="nav-btn flex flex-col items-center p-2 text-gray-400 hover:text-blue-600 transition-colors" data-target="dashboard">
             <i class="fas fa-chart-pie text-xl mb-1"></i>
@@ -352,6 +378,8 @@
         },
         gasUrl: ''
     };
+
+    let currentDashboardLocation = 'Semua';
 
     // PWA Service Worker Registration
     const isLocalProtocol = window.location.protocol === 'file:' || window.location.protocol === 'blob:' || window.location.protocol === 'about:';
@@ -411,7 +439,6 @@
         const savedData = localStorage.getItem('kontraktorData');
         if (savedData) {
             appData = JSON.parse(savedData);
-            // Patch data jika variabel locations belum ada (karena user pakai data lama)
             if(!appData.settings.locations) appData.settings.locations = ['Proyek Utama'];
         }
         
@@ -425,7 +452,7 @@
         switchView('dashboard');
         
         if (appData.gasUrl && navigator.onLine) {
-            setTimeout(() => pullDataFromCloud(true), 1500);
+            setTimeout(() => syncData(true), 1500);
         }
     }
 
@@ -458,6 +485,7 @@
     function updateUI() {
         updateDropdowns();
         updateTables();
+        renderDashboardTabs();
         updateDashboard();
         updateSettingsMaster();
     }
@@ -484,15 +512,56 @@
         fillOptionsObj('select-material', appData.settings.materials);
         fillOptionsObj('select-supply', appData.settings.supplies);
         fillOptionsStr('select-worker', appData.settings.workers);
-        fillOptionsStr('select-location', appData.settings.locations || []); // Add Dropdown for Location
+        fillOptionsStr('select-location', appData.settings.locations || []);
+    }
+
+    function renderDashboardTabs() {
+        const tabsContainer = document.getElementById('dashboard-tabs');
+        const locations = ['Semua', ...(appData.settings.locations || [])];
+        
+        tabsContainer.innerHTML = locations.map(loc => {
+            const isActive = loc === currentDashboardLocation;
+            const baseClass = "whitespace-nowrap px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-200 border cursor-pointer flex-shrink-0";
+            const activeClass = isActive 
+                ? "bg-blue-600 text-white border-blue-600 shadow-md" 
+                : "bg-white text-gray-600 border-gray-200 hover:bg-blue-50";
+                
+            return `<button onclick="setDashboardLocation('${loc}')" class="${baseClass} ${activeClass}">${loc}</button>`;
+        }).join('');
+    }
+
+    function setDashboardLocation(loc) {
+        currentDashboardLocation = loc;
+        renderDashboardTabs(); // Update styling tab aktif
+        updateDashboard(); // Hitung ulang seluruh angka dashboard
+        
+        // Scroll horizontal tab agar selalu terlihat
+        const tabsContainer = document.getElementById('dashboard-tabs');
+        const activeBtn = tabsContainer.querySelector('.bg-blue-600');
+        if(activeBtn) {
+            activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        }
     }
 
     function updateDashboard() {
-        const sumTotal = (type) => appData.transactions[type].reduce((acc, curr) => acc + curr.total, 0);
+        // Update label keterangan lokasi
+        document.getElementById('dash-lokasi-label').textContent = currentDashboardLocation === 'Semua' ? 'Semua Proyek' : `Proyek: ${currentDashboardLocation}`;
+
+        // Helper filter berdasar tab terpilih
+        const getFilteredTx = (type) => {
+            return appData.transactions[type].filter(tx => {
+                if (currentDashboardLocation === 'Semua') return true;
+                const txLoc = tx.location || 'Umum';
+                return txLoc === currentDashboardLocation;
+            });
+        };
+
+        const sumTotal = (type) => getFilteredTx(type).reduce((acc, curr) => acc + curr.total, 0);
         
         const totMaterial = sumTotal('material');
         const totGaji = sumTotal('gaji');
         const totBahan = sumTotal('bahan');
+        
         document.getElementById('dash-total-all').textContent = formatRp(totMaterial + totGaji + totBahan);
         document.getElementById('dash-total-material').textContent = formatRp(totMaterial);
         document.getElementById('dash-total-gaji').textContent = formatRp(totGaji);
@@ -500,7 +569,9 @@
 
         const renderRincian = (type, containerId) => {
             const summary = {};
-            appData.transactions[type].forEach(tx => {
+            const filteredData = getFilteredTx(type);
+
+            filteredData.forEach(tx => {
                 if(!summary[tx.name]) summary[tx.name] = { cost: 0, count: 0, unit: tx.unit || '' };
                 
                 summary[tx.name].cost += tx.total;
@@ -517,19 +588,19 @@
 
             const container = document.getElementById(containerId);
             if(Object.keys(summary).length === 0) {
-                container.innerHTML = `<div class="text-center text-xs text-gray-500 py-4 bg-gray-50 rounded-lg">Belum ada pencatatan data</div>`;
+                container.innerHTML = `<div class="text-center text-xs text-gray-400 py-4 bg-gray-50 rounded-lg">Tidak ada data untuk lokasi ini</div>`;
             } else {
                 container.innerHTML = Object.keys(summary).map(name => {
                     let subText = "";
                     if (type === 'gaji') {
-                        subText = `Dibayar: ${summary[name].count} kali`;
+                        subText = `Dibayar: <span class="font-bold text-gray-700">${summary[name].count} kali</span>`;
                     } else {
                         let displayUnit = summary[name].unit || 'item';
-                        subText = `Terkumpul: ${summary[name].count} ${displayUnit}`;
+                        subText = `Terkumpul: <span class="font-bold text-gray-700">${summary[name].count} ${displayUnit}</span>`;
                     }
 
                     return `
-                        <div onclick="showItemHistory('${type}', '${name}')" class="flex justify-between items-center py-3 px-3 cursor-pointer rounded-lg hover:bg-blue-50 active:bg-blue-100 transition-colors group">
+                        <div onclick="showItemHistory('${type}', '${name}')" class="flex justify-between items-center py-3 px-3 cursor-pointer rounded-lg hover:bg-blue-50 active:bg-blue-100 transition-colors group border-b border-gray-50 last:border-0">
                             <div>
                                 <p class="font-medium text-sm text-gray-800 group-hover:text-blue-700 transition-colors">${name}</p>
                                 <p class="text-[10px] text-gray-500">${subText}</p>
@@ -556,12 +627,21 @@
         
         let iconType = type === 'gaji' ? '<i class="fas fa-users text-green-500 mr-2"></i>' : type === 'material' ? '<i class="fas fa-boxes text-orange-500 mr-2"></i>' : '<i class="fas fa-hammer text-purple-500 mr-2"></i>';
         
+        let subTitleLocation = currentDashboardLocation === 'Semua' ? 'Keseluruhan Proyek' : `Proyek: ${currentDashboardLocation}`;
+
         title.innerHTML = `
-            <span class="text-[10px] text-gray-400 font-semibold uppercase tracking-wider block mb-1">Riwayat Transaksi</span>
-            <div class="flex items-center text-lg font-bold text-gray-800">${iconType} ${itemName}</div>
+            <div>
+                <span class="text-[10px] text-gray-400 font-semibold uppercase tracking-wider block mb-1">Riwayat: ${subTitleLocation}</span>
+                <div class="flex items-center text-lg font-bold text-gray-800">${iconType} ${itemName}</div>
+            </div>
         `;
         
-        const historyData = appData.transactions[type].filter(tx => tx.name === itemName);
+        // Filter history sesuai tab lokasi saat ini
+        const historyData = appData.transactions[type].filter(tx => {
+            const matchName = tx.name === itemName;
+            const matchLoc = currentDashboardLocation === 'Semua' ? true : (tx.location || 'Umum') === currentDashboardLocation;
+            return matchName && matchLoc;
+        });
         
         if (historyData.length === 0) {
             content.innerHTML = `<div class="text-center text-xs text-gray-500 py-10">Belum ada riwayat tercatat</div>`;
@@ -570,7 +650,11 @@
             [...historyData].reverse().forEach(tx => {
                 let detailText = "";
                 let borderColor = type === 'gaji' ? 'bg-green-500' : type === 'material' ? 'bg-orange-500' : 'bg-purple-500';
-                let locText = tx.location ? `<span class="text-blue-500 ml-2"><i class="fas fa-map-marker-alt"></i> ${tx.location}</span>` : '';
+                
+                let tagLokasi = '';
+                if(currentDashboardLocation === 'Semua' && tx.location) {
+                    tagLokasi = `<span class="text-[10px] bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded ml-2"><i class="fas fa-map-marker-alt"></i> ${tx.location}</span>`;
+                }
                 
                 if (type === 'gaji') {
                     detailText = `<span class="bg-green-100 text-green-700 px-2 py-0.5 rounded text-[10px] font-medium"><i class="fas fa-check-circle mr-1"></i>Sukses Dibayar</span>`;
@@ -583,7 +667,7 @@
                     <div class="bg-white p-3 rounded-xl shadow-sm border border-gray-100 relative overflow-hidden flex justify-between items-center">
                         <div class="absolute left-0 top-0 bottom-0 w-1 ${borderColor}"></div>
                         <div class="pl-3">
-                            <p class="text-xs font-semibold text-gray-500 mb-1"><i class="far fa-calendar-alt mr-1"></i>${formatDate(tx.date)} ${locText}</p>
+                            <p class="text-xs font-semibold text-gray-500 mb-1"><i class="far fa-calendar-alt mr-1"></i>${formatDate(tx.date)} ${tagLokasi}</p>
                             <p class="text-[11px] text-gray-500">${detailText}</p>
                         </div>
                         <div class="font-bold text-gray-800 text-sm text-right">
@@ -629,10 +713,12 @@
 
         document.getElementById('table-gaji').innerHTML = [...appData.transactions.gaji].reverse().map(item => `
             <tr class="hover:bg-blue-50 transition-colors">
-                <td class="p-3 text-xs text-gray-500 border-b border-gray-50">${formatDate(item.date)}</td>
+                <td class="p-3 text-xs text-gray-500 border-b border-gray-50">
+                    ${formatDate(item.date)}<br>
+                    <span class="text-[10px] text-blue-500"><i class="fas fa-map-marker-alt"></i> ${item.location || 'Umum'}</span>
+                </td>
                 <td class="p-3 border-b border-gray-50">
                     <div class="font-medium text-gray-800">${item.name}</div>
-                    <div class="text-[10px] text-blue-500 mt-0.5"><i class="fas fa-map-marker-alt"></i> ${item.location || 'Umum'}</div>
                 </td>
                 <td class="p-3 text-right font-semibold text-gray-800 text-sm border-b border-gray-50">${formatRp(item.total)}</td>
             </tr>
@@ -649,7 +735,9 @@
 
         if (type === 'material' || type === 'bahan') {
             let rawInput = document.getElementById(`${type}-qty`).value.trim();
-            let numericQty = parseFloat(rawInput.replace(/[^0-9.,]/g, '').replace(',', '.'));
+            
+            let numericMatch = rawInput.match(/[0-9.,]+/);
+            let numericQty = numericMatch ? parseFloat(numericMatch[0].replace(',', '.')) : 1;
             if (isNaN(numericQty)) numericQty = 1; 
             newTx.qty = numericQty;
 
@@ -658,6 +746,7 @@
             let masterItem = masterList.find(m => (m.name || m) === newTx.name);
             
             let textOnly = rawInput.replace(/[0-9.,]/g, '').trim();
+            
             if(textOnly) {
                 unitToSave = textOnly; 
             } else if (masterItem && masterItem.unit) {
@@ -772,7 +861,7 @@
         if(url && navigator.onLine) pullDataFromCloud(true);
     }
 
-    async function pullDataFromCloud(isSilent = false) {
+    function pullDataFromCloud(isSilent = false) {
         if(!appData.gasUrl || !appData.gasUrl.includes('/macros/s/')) {
             if(!isSilent) showToast('URL Spreadsheet belum valid!');
             return;
@@ -804,7 +893,7 @@
                 }
             } catch(err) {
                 if(!isSilent) {
-                    showToast('Gagal Terhubung ke Excel! Cek URL (Pilih "Anyone" saat deploy).');
+                    showToast('Gagal Koneksi: Cek URL & Set "Anyone".');
                     console.error('Fetch Error:', err);
                 }
             } finally {
@@ -875,7 +964,7 @@
                 if(!isSilent) showToast('Error Server: ' + result.message);
             }
         } catch(err) {
-            if(!isSilent) showToast('Gagal sinkron. Cek koneksi internet & URL Excel.');
+            if(!isSilent) showToast('Gagal terhubung ke Cloud.');
             console.error(err);
         } finally {
             syncIcon.classList.remove('fa-spin');
