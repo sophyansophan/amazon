@@ -21,7 +21,6 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         ::-webkit-scrollbar { width: 0px; background: transparent; }
         
-        /* Utility untuk Hide Scrollbar tapi tetap bisa di-scroll (untuk tab Dashboard) */
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
@@ -42,7 +41,6 @@
 <div id="toast" class="toast">Notifikasi</div>
 
 <div class="app-container">
-    <!-- HEADER -->
     <header class="bg-blue-600 text-white p-4 sticky top-0 z-40 shadow-md">
         <div class="flex justify-between items-center">
             <h1 class="text-xl font-bold tracking-wide" id="header-title">Dashboard</h1>
@@ -52,7 +50,6 @@
         </div>
     </header>
 
-    <!-- MAIN VIEW: DASHBOARD -->
     <main id="view-dashboard" class="view-section active p-4">
         
         <!-- Tab Lokasi Proyek -->
@@ -68,45 +65,65 @@
         
         <h3 class="font-semibold text-gray-700 mb-3 flex items-center"><i class="fas fa-wallet text-blue-500 mr-2"></i>Rincian Total Pengeluaran</h3>
         <div class="grid grid-cols-2 gap-4">
-            <div class="bg-white p-4 rounded-xl shadow border border-gray-100 relative overflow-hidden group">
+            <!-- Kotak Material -->
+            <div onclick="toggleDashboardDetail('material')" class="bg-white p-4 rounded-xl shadow border border-gray-100 relative overflow-hidden group cursor-pointer active:scale-95 transition-all hover:border-orange-200">
                 <div class="absolute -right-2 -bottom-2 opacity-10 group-hover:scale-110 transition-transform"><i class="fas fa-boxes text-5xl"></i></div>
                 <div class="text-orange-500 mb-2"><i class="fas fa-boxes fa-lg"></i></div>
                 <p class="text-xs text-gray-500 relative z-10">Material Utama</p>
                 <p class="font-bold text-gray-800 relative z-10" id="dash-total-material">Rp 0</p>
+                <p class="text-[9px] text-gray-400 mt-2 border-t border-gray-100 pt-2"><i class="fas fa-chevron-down mr-1"></i>Klik lihat rincian</p>
             </div>
-            <div class="bg-white p-4 rounded-xl shadow border border-gray-100 relative overflow-hidden group">
+            
+            <!-- Kotak Gaji -->
+            <div onclick="toggleDashboardDetail('gaji')" class="bg-white p-4 rounded-xl shadow border border-gray-100 relative overflow-hidden group cursor-pointer active:scale-95 transition-all hover:border-green-200">
                 <div class="absolute -right-2 -bottom-2 opacity-10 group-hover:scale-110 transition-transform"><i class="fas fa-users text-5xl"></i></div>
                 <div class="text-green-500 mb-2"><i class="fas fa-users fa-lg"></i></div>
                 <p class="text-xs text-gray-500 relative z-10">Gaji Tukang</p>
                 <p class="font-bold text-gray-800 relative z-10" id="dash-total-gaji">Rp 0</p>
+                <p class="text-[9px] text-gray-400 mt-2 border-t border-gray-100 pt-2"><i class="fas fa-chevron-down mr-1"></i>Klik lihat rincian</p>
             </div>
-            <div class="bg-white p-4 rounded-xl shadow border border-gray-100 col-span-2 flex items-center justify-between relative overflow-hidden group">
+            
+            <!-- Kotak Bahan -->
+            <div onclick="toggleDashboardDetail('bahan')" class="bg-white p-4 rounded-xl shadow border border-gray-100 col-span-2 flex items-center justify-between relative overflow-hidden group cursor-pointer active:scale-95 transition-all hover:border-purple-200">
                 <div class="absolute -right-2 -top-2 opacity-10 group-hover:scale-110 transition-transform"><i class="fas fa-hammer text-6xl"></i></div>
-                <div class="relative z-10">
-                    <div class="text-purple-500 mb-2"><i class="fas fa-hammer fa-lg"></i></div>
-                    <p class="text-xs text-gray-500">Bahan Bangunan Lainnya</p>
+                <div class="relative z-10 w-full">
+                    <div class="flex justify-between items-center w-full">
+                        <div>
+                            <div class="text-purple-500 mb-2"><i class="fas fa-hammer fa-lg"></i></div>
+                            <p class="text-xs text-gray-500">Bahan Bangunan Lainnya</p>
+                        </div>
+                        <p class="font-bold text-gray-800 text-xl relative z-10 text-right" id="dash-total-bahan">Rp 0</p>
+                    </div>
+                    <p class="text-[9px] text-gray-400 mt-2 border-t border-gray-100 pt-2 text-center w-full"><i class="fas fa-chevron-down mr-1"></i>Klik lihat rincian</p>
                 </div>
-                <p class="font-bold text-gray-800 text-right text-xl relative z-10" id="dash-total-bahan">Rp 0</p>
             </div>
         </div>
 
-        <h3 class="font-semibold text-gray-700 mt-6 mb-3 flex items-center"><i class="fas fa-boxes text-orange-500 mr-2"></i>Rincian Material Utama</h3>
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-2 mb-4">
-            <div id="dash-detail-material" class="divide-y divide-gray-50"></div>
+        <!-- Rincian Material (Hidden by Default) -->
+        <div id="wrap-detail-material" class="hidden mt-6 animate-[fadeIn_0.3s_ease-in-out]">
+            <h3 class="font-semibold text-gray-700 mb-3 flex items-center"><i class="fas fa-boxes text-orange-500 mr-2"></i>Rincian Material Utama</h3>
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-2 mb-4">
+                <div id="dash-detail-material" class="divide-y divide-gray-50"></div>
+            </div>
         </div>
 
-        <h3 class="font-semibold text-gray-700 mt-4 mb-3 flex items-center"><i class="fas fa-users text-green-500 mr-2"></i>Rincian Gaji Pekerja</h3>
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-2 mb-4">
-            <div id="dash-detail-gaji" class="divide-y divide-gray-50"></div>
+        <!-- Rincian Gaji (Hidden by Default) -->
+        <div id="wrap-detail-gaji" class="hidden mt-6 animate-[fadeIn_0.3s_ease-in-out]">
+            <h3 class="font-semibold text-gray-700 mb-3 flex items-center"><i class="fas fa-users text-green-500 mr-2"></i>Rincian Gaji Pekerja</h3>
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-2 mb-4">
+                <div id="dash-detail-gaji" class="divide-y divide-gray-50"></div>
+            </div>
         </div>
 
-        <h3 class="font-semibold text-gray-700 mt-4 mb-3 flex items-center"><i class="fas fa-hammer text-purple-500 mr-2"></i>Rincian Bahan Bangunan</h3>
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-2 mb-4">
-            <div id="dash-detail-bahan" class="divide-y divide-gray-50"></div>
+        <!-- Rincian Bahan (Hidden by Default) -->
+        <div id="wrap-detail-bahan" class="hidden mt-6 animate-[fadeIn_0.3s_ease-in-out]">
+            <h3 class="font-semibold text-gray-700 mb-3 flex items-center"><i class="fas fa-hammer text-purple-500 mr-2"></i>Rincian Bahan Bangunan</h3>
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-2 mb-4">
+                <div id="dash-detail-bahan" class="divide-y divide-gray-50"></div>
+            </div>
         </div>
     </main>
 
-    <!-- MAIN VIEW: MATERIAL -->
     <main id="view-material" class="view-section p-4">
         <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-6 relative overflow-hidden">
             <div class="absolute top-0 left-0 w-1 h-full bg-orange-500"></div>
@@ -153,7 +170,6 @@
         </div>
     </main>
 
-    <!-- MAIN VIEW: GAJI -->
     <main id="view-gaji" class="view-section p-4">
         <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-6 relative overflow-hidden">
             <div class="absolute top-0 left-0 w-1 h-full bg-green-500"></div>
@@ -194,7 +210,6 @@
         </div>
     </main>
 
-    <!-- MAIN VIEW: BAHAN -->
     <main id="view-bahan" class="view-section p-4">
         <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-6 relative overflow-hidden">
             <div class="absolute top-0 left-0 w-1 h-full bg-purple-500"></div>
@@ -241,7 +256,6 @@
         </div>
     </main>
 
-    <!-- MAIN VIEW: PENGATURAN -->
     <main id="view-pengaturan" class="view-section p-4">
         <div class="bg-blue-50 p-4 rounded-xl mb-4 border border-blue-100 text-sm text-blue-800 leading-relaxed shadow-sm">
             <strong class="block mb-1"><i class="fas fa-cloud text-blue-600 mr-1"></i> Info Cloud Sinkronisasi:</strong> 
@@ -263,7 +277,6 @@
         </div>
 
         <div class="space-y-4">
-            
             <!-- Lokasi Master -->
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
                 <h3 class="font-semibold mb-2 text-sm text-gray-700 border-b pb-2"><i class="fas fa-map-marker-alt text-blue-500 mr-2"></i>Master Lokasi Proyek</h3>
@@ -312,9 +325,6 @@
         </div>
     </main>
 
-    <!-- UI COMPONENTS -->
-    
-    <!-- PWA Install Prompt Banner -->
     <div id="install-prompt" class="fixed bottom-24 left-1/2 transform -translate-x-1/2 w-[90%] max-w-sm bg-white rounded-xl shadow-[0_0_20px_rgba(0,0,0,0.15)] border border-blue-100 p-4 z-[60] hidden flex flex-col sm:flex-row items-center gap-3 transition-all duration-500 translate-y-full opacity-0">
         <div class="flex-shrink-0 bg-blue-100 text-blue-600 w-10 h-10 flex items-center justify-center rounded-lg">
             <i class="fas fa-download text-xl"></i>
@@ -329,7 +339,6 @@
         </div>
     </div>
 
-    <!-- Navigation Bar -->
     <nav class="fixed bottom-0 w-full max-w-md bg-white border-t border-gray-200 flex justify-around pb-4 pt-2 px-2 shadow-[0_-5px_15px_rgba(0,0,0,0.05)] z-40">
         <button onclick="switchView('dashboard')" class="nav-btn flex flex-col items-center p-2 text-gray-400 hover:text-blue-600 transition-colors" data-target="dashboard">
             <i class="fas fa-chart-pie text-xl mb-1"></i>
@@ -353,7 +362,6 @@
         </button>
     </nav>
     
-    <!-- Modal Histori Detail -->
     <div id="history-modal" class="fixed inset-0 bg-black bg-opacity-60 z-[100] hidden items-end sm:items-center justify-center backdrop-blur-sm">
         <div class="bg-gray-50 w-full sm:max-w-sm max-h-[85vh] rounded-t-2xl sm:rounded-2xl flex flex-col shadow-2xl modal-content-animate overflow-hidden">
             <div class="bg-white p-4 border-b border-gray-200 flex justify-between items-start shadow-sm z-10">
@@ -391,7 +399,6 @@
         });
     }
 
-    // PWA Install Prompt Logic
     let deferredPrompt;
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
@@ -532,10 +539,9 @@
 
     function setDashboardLocation(loc) {
         currentDashboardLocation = loc;
-        renderDashboardTabs(); // Update styling tab aktif
-        updateDashboard(); // Hitung ulang seluruh angka dashboard
+        renderDashboardTabs(); 
+        updateDashboard(); 
         
-        // Scroll horizontal tab agar selalu terlihat
         const tabsContainer = document.getElementById('dashboard-tabs');
         const activeBtn = tabsContainer.querySelector('.bg-blue-600');
         if(activeBtn) {
@@ -543,11 +549,28 @@
         }
     }
 
+    function toggleDashboardDetail(type) {
+        const wrap = document.getElementById(`wrap-detail-${type}`);
+        const isHidden = wrap.classList.contains('hidden');
+        
+        // Sembunyikan semua dulu (sistem akordion)
+        document.getElementById('wrap-detail-material').classList.add('hidden');
+        document.getElementById('wrap-detail-gaji').classList.add('hidden');
+        document.getElementById('wrap-detail-bahan').classList.add('hidden');
+        
+        // Tampilkan yang diklik jika sebelumnya tersembunyi
+        if (isHidden) {
+            wrap.classList.remove('hidden');
+            // Sedikit delay agar DOM siap sebelum di-scroll
+            setTimeout(() => {
+                wrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 50);
+        }
+    }
+
     function updateDashboard() {
-        // Update label keterangan lokasi
         document.getElementById('dash-lokasi-label').textContent = currentDashboardLocation === 'Semua' ? 'Semua Proyek' : `Proyek: ${currentDashboardLocation}`;
 
-        // Helper filter berdasar tab terpilih
         const getFilteredTx = (type) => {
             return appData.transactions[type].filter(tx => {
                 if (currentDashboardLocation === 'Semua') return true;
@@ -636,7 +659,6 @@
             </div>
         `;
         
-        // Filter history sesuai tab lokasi saat ini
         const historyData = appData.transactions[type].filter(tx => {
             const matchName = tx.name === itemName;
             const matchLoc = currentDashboardLocation === 'Semua' ? true : (tx.location || 'Umum') === currentDashboardLocation;
@@ -778,7 +800,7 @@
                 let unit = item.unit ? ` <span class="text-gray-400 text-[10px]">(${item.unit})</span>` : '';
                 return `<span class="bg-gray-100 border border-gray-200 px-3 py-1.5 rounded-full text-xs flex items-center gap-2 shadow-sm">
                     ${name}${unit} 
-                    <button onclick="removeMaster('${settingKey}', ${idx})" class="text-red-400 hover:text-red-600 transition bg-white rounded-full w-4 h-4 flex items-center justify-center"><i class="fas fa-times text-[10px]"></i></button>
+                    <button onclick="removeMaster('${settingKey}', ${idx})" class="text-red-400 hover:text-red-600 transition bg-white rounded-full w-4 h-4 flex items-center justify-center shrink-0"><i class="fas fa-times text-[10px]"></i></button>
                 </span>`;
             }).join('');
         };
@@ -893,7 +915,7 @@
                 }
             } catch(err) {
                 if(!isSilent) {
-                    showToast('Gagal Koneksi: Cek URL & Set "Anyone".');
+                    showToast('Gagal terhubung. Pastikan URL & Akses "Anyone".');
                     console.error('Fetch Error:', err);
                 }
             } finally {
