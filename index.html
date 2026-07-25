@@ -151,25 +151,25 @@
                     <input type="date" id="material-date" required class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-orange-500 outline-none bg-gray-50 focus:bg-white transition-colors">
                 </div>
                 <div class="mb-3">
-                    <label class="block text-xs text-gray-500 mb-1">Lokasi Proyek</label>
-                    <select id="material-location" required class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-orange-500 outline-none select-location bg-gray-50 focus:bg-white transition-colors">
-                        <option value="">Pilih Lokasi...</option>
-                    </select>
+                    <label class="block text-xs text-gray-500 mb-1">Lokasi Proyek <span class="text-[10px] text-gray-400 font-normal">(Opsional)</span></label>
+                    <input type="text" list="datalist-locations" id="material-location" placeholder="Ketik atau pilih lokasi..." class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-orange-500 outline-none bg-gray-50 focus:bg-white transition-colors">
                 </div>
                 <div class="mb-3">
-                    <label class="block text-xs text-gray-500 mb-1">Nama Material</label>
-                    <select id="material-name" required class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-orange-500 outline-none select-material bg-gray-50 focus:bg-white transition-colors">
-                        <option value="">Pilih Material...</option>
-                    </select>
+                    <label class="block text-xs text-gray-500 mb-1">Nama Material <span class="text-[10px] text-gray-400 font-normal">(Opsional)</span></label>
+                    <input type="text" list="datalist-materials" id="material-name" placeholder="Ketik atau pilih material..." class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-orange-500 outline-none bg-gray-50 focus:bg-white transition-colors">
                 </div>
-                <div class="grid grid-cols-2 gap-3 mb-4">
+                <div class="grid grid-cols-3 gap-2 mb-4">
                     <div>
-                        <label class="block text-xs text-gray-500 mb-1">Jumlah</label>
-                        <input type="number" step="any" id="material-qty" required placeholder="Cth: 5" class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-orange-500 outline-none bg-gray-50 focus:bg-white transition-colors">
+                        <label class="block text-[10px] text-gray-500 mb-1">Jumlah</label>
+                        <input type="number" step="any" id="material-qty" placeholder="Cth: 5" class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-orange-500 outline-none bg-gray-50 focus:bg-white transition-colors">
                     </div>
                     <div>
-                        <label class="block text-xs text-gray-500 mb-1">Harga Satuan</label>
-                        <input type="number" id="material-price" required min="0" class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-orange-500 outline-none bg-gray-50 focus:bg-white transition-colors">
+                        <label class="block text-[10px] text-gray-500 mb-1">Harga Satuan</label>
+                        <input type="number" id="material-price" min="0" class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-orange-500 outline-none bg-gray-50 focus:bg-white transition-colors">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-semibold text-gray-700 mb-1">Total Harga</label>
+                        <input type="number" id="material-total" min="0" class="w-full border border-orange-200 rounded-lg p-2 text-sm focus:ring-2 focus:ring-orange-500 outline-none bg-orange-50 focus:bg-white transition-colors shadow-inner">
                     </div>
                 </div>
                 <button type="submit" class="w-full bg-orange-500 text-white rounded-lg p-2 font-medium hover:bg-orange-600 transition shadow-sm hover:shadow-md">Simpan Data</button>
@@ -197,20 +197,16 @@
                     <input type="date" id="gaji-date" required class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-green-500 outline-none bg-gray-50 focus:bg-white transition-colors">
                 </div>
                 <div class="mb-3">
-                    <label class="block text-xs text-gray-500 mb-1">Lokasi Proyek</label>
-                    <select id="gaji-location" required class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-green-500 outline-none select-location bg-gray-50 focus:bg-white transition-colors">
-                        <option value="">Pilih Lokasi...</option>
-                    </select>
+                    <label class="block text-xs text-gray-500 mb-1">Lokasi Proyek <span class="text-[10px] text-gray-400 font-normal">(Opsional)</span></label>
+                    <input type="text" list="datalist-locations" id="gaji-location" placeholder="Ketik atau pilih lokasi..." class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-green-500 outline-none bg-gray-50 focus:bg-white transition-colors">
                 </div>
                 <div class="mb-3">
-                    <label class="block text-xs text-gray-500 mb-1">Nama Pekerja / Tukang</label>
-                    <select id="gaji-name" required class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-green-500 outline-none select-worker bg-gray-50 focus:bg-white transition-colors">
-                        <option value="">Pilih Pekerja...</option>
-                    </select>
+                    <label class="block text-xs text-gray-500 mb-1">Nama Pekerja / Tukang <span class="text-[10px] text-gray-400 font-normal">(Opsional)</span></label>
+                    <input type="text" list="datalist-workers" id="gaji-name" placeholder="Ketik atau pilih pekerja..." class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-green-500 outline-none bg-gray-50 focus:bg-white transition-colors">
                 </div>
                 <div class="mb-4">
-                    <label class="block text-xs text-gray-500 mb-1">Total Gaji Dibayar</label>
-                    <input type="number" id="gaji-total" required min="0" class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-green-500 outline-none bg-gray-50 focus:bg-white transition-colors">
+                    <label class="block text-xs text-gray-500 mb-1">Total Gaji Dibayar <span class="text-[10px] text-gray-400 font-normal">(Opsional)</span></label>
+                    <input type="number" id="gaji-total" min="0" class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-green-500 outline-none bg-gray-50 focus:bg-white transition-colors">
                 </div>
                 <button type="submit" class="w-full bg-green-600 text-white rounded-lg p-2 font-medium hover:bg-green-700 transition shadow-sm hover:shadow-md">Simpan Data</button>
             </form>
@@ -237,25 +233,25 @@
                     <input type="date" id="bahan-date" required class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-purple-500 outline-none bg-gray-50 focus:bg-white transition-colors">
                 </div>
                 <div class="mb-3">
-                    <label class="block text-xs text-gray-500 mb-1">Lokasi Proyek</label>
-                    <select id="bahan-location" required class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-purple-500 outline-none select-location bg-gray-50 focus:bg-white transition-colors">
-                        <option value="">Pilih Lokasi...</option>
-                    </select>
+                    <label class="block text-xs text-gray-500 mb-1">Lokasi Proyek <span class="text-[10px] text-gray-400 font-normal">(Opsional)</span></label>
+                    <input type="text" list="datalist-locations" id="bahan-location" placeholder="Ketik atau pilih lokasi..." class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-purple-500 outline-none bg-gray-50 focus:bg-white transition-colors">
                 </div>
                 <div class="mb-3">
-                    <label class="block text-xs text-gray-500 mb-1">Nama Bahan</label>
-                    <select id="bahan-name" required class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-purple-500 outline-none select-supply bg-gray-50 focus:bg-white transition-colors">
-                        <option value="">Pilih Bahan...</option>
-                    </select>
+                    <label class="block text-xs text-gray-500 mb-1">Nama Bahan <span class="text-[10px] text-gray-400 font-normal">(Opsional)</span></label>
+                    <input type="text" list="datalist-supplies" id="bahan-name" placeholder="Ketik atau pilih bahan..." class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-purple-500 outline-none bg-gray-50 focus:bg-white transition-colors">
                 </div>
-                <div class="grid grid-cols-2 gap-3 mb-4">
+                <div class="grid grid-cols-3 gap-2 mb-4">
                     <div>
-                        <label class="block text-xs text-gray-500 mb-1">Jumlah</label>
-                        <input type="number" step="any" id="bahan-qty" required placeholder="Cth: 10" class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-purple-500 outline-none bg-gray-50 focus:bg-white transition-colors">
+                        <label class="block text-[10px] text-gray-500 mb-1">Jumlah</label>
+                        <input type="number" step="any" id="bahan-qty" placeholder="Cth: 10" class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-purple-500 outline-none bg-gray-50 focus:bg-white transition-colors">
                     </div>
                     <div>
-                        <label class="block text-xs text-gray-500 mb-1">Harga Satuan</label>
-                        <input type="number" id="bahan-price" required min="0" class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-purple-500 outline-none bg-gray-50 focus:bg-white transition-colors">
+                        <label class="block text-[10px] text-gray-500 mb-1">Harga Satuan</label>
+                        <input type="number" id="bahan-price" min="0" class="w-full border rounded-lg p-2 text-sm focus:ring-2 focus:ring-purple-500 outline-none bg-gray-50 focus:bg-white transition-colors">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-semibold text-gray-700 mb-1">Total Harga</label>
+                        <input type="number" id="bahan-total" min="0" class="w-full border border-purple-200 rounded-lg p-2 text-sm focus:ring-2 focus:ring-purple-500 outline-none bg-purple-50 focus:bg-white transition-colors shadow-inner">
                     </div>
                 </div>
                 <button type="submit" class="w-full bg-purple-600 text-white rounded-lg p-2 font-medium hover:bg-purple-700 transition shadow-sm hover:shadow-md">Simpan Data</button>
@@ -325,48 +321,26 @@
             <!-- Lokasi Master -->
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
                 <h3 class="font-semibold mb-2 text-sm text-gray-700 border-b pb-2"><i class="fas fa-map-marker-alt text-blue-500 mr-2"></i>Master Lokasi Proyek</h3>
-                <div class="flex gap-2 mb-3">
-                    <input type="text" id="new-location" placeholder="Cth: Proyek Perumahan A" class="min-w-0 flex-1 border rounded-lg p-2 text-sm outline-none focus:ring-1 focus:ring-blue-500 bg-gray-50 focus:bg-white">
-                    <button onclick="addMaster('locations', 'new-location', null)" class="shrink-0 w-10 h-10 bg-blue-600 text-white flex justify-center items-center rounded-lg text-sm hover:bg-blue-700 transition shadow-sm"><i class="fas fa-plus"></i></button>
-                </div>
                 <div id="list-locations" class="flex flex-wrap gap-2"></div>
             </div>
 
             <!-- Material Master -->
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
                 <h3 class="font-semibold mb-2 text-sm text-gray-700 border-b pb-2"><i class="fas fa-boxes text-orange-500 mr-2"></i>Master Material</h3>
-                <div class="flex gap-2 mb-3">
-                    <input type="text" id="new-material" placeholder="Nama (cth: Pasir)" class="min-w-0 flex-[2] border rounded-lg p-2 text-sm outline-none focus:ring-1 focus:ring-orange-500 bg-gray-50 focus:bg-white">
-                    <input type="text" id="new-material-unit" placeholder="Satuan (res)" class="min-w-0 flex-[1] border rounded-lg p-2 text-sm outline-none focus:ring-1 focus:ring-orange-500 bg-gray-50 focus:bg-white">
-                    <button onclick="addMaster('materials', 'new-material', 'new-material-unit')" class="shrink-0 w-10 h-10 bg-orange-500 text-white flex justify-center items-center rounded-lg text-sm hover:bg-orange-600 transition shadow-sm"><i class="fas fa-plus"></i></button>
-                </div>
                 <div id="list-materials" class="flex flex-wrap gap-2"></div>
             </div>
 
             <!-- Bahan Master -->
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
                 <h3 class="font-semibold mb-2 text-sm text-gray-700 border-b pb-2"><i class="fas fa-hammer text-purple-500 mr-2"></i>Master Bahan Bangunan</h3>
-                <div class="flex gap-2 mb-3">
-                    <input type="text" id="new-supply" placeholder="Nama (cth: Paku)" class="min-w-0 flex-[2] border rounded-lg p-2 text-sm outline-none focus:ring-1 focus:ring-purple-500 bg-gray-50 focus:bg-white">
-                    <input type="text" id="new-supply-unit" placeholder="Satuan (kg)" class="min-w-0 flex-[1] border rounded-lg p-2 text-sm outline-none focus:ring-1 focus:ring-purple-500 bg-gray-50 focus:bg-white">
-                    <button onclick="addMaster('supplies', 'new-supply', 'new-supply-unit')" class="shrink-0 w-10 h-10 bg-purple-600 text-white flex justify-center items-center rounded-lg text-sm hover:bg-purple-700 transition shadow-sm"><i class="fas fa-plus"></i></button>
-                </div>
                 <div id="list-supplies" class="flex flex-wrap gap-2"></div>
             </div>
 
             <!-- Gaji Master -->
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
                 <h3 class="font-semibold mb-2 text-sm text-gray-700 border-b pb-2"><i class="fas fa-users text-green-500 mr-2"></i>Master Gaji Tukang</h3>
-                <div class="flex gap-2 mb-3">
-                    <input type="text" id="new-worker" placeholder="Cth: Pak Budi" class="min-w-0 flex-1 border rounded-lg p-2 text-sm outline-none focus:ring-1 focus:ring-green-500 bg-gray-50 focus:bg-white">
-                    <button onclick="addMaster('workers', 'new-worker', null)" class="shrink-0 w-10 h-10 bg-green-600 text-white flex justify-center items-center rounded-lg text-sm hover:bg-green-700 transition shadow-sm"><i class="fas fa-plus"></i></button>
-                </div>
                 <div id="list-workers" class="flex flex-wrap gap-2"></div>
             </div>
-            
-            <button onclick="resetData()" class="w-full border border-red-200 bg-red-50 text-red-600 rounded-lg p-3 text-sm font-semibold hover:bg-red-100 transition mt-4 shadow-sm">
-                <i class="fas fa-trash-alt mr-1"></i> Reset Semua Data Lokal
-            </button>
         </div>
     </main>
 
@@ -423,6 +397,12 @@
         <button onclick="switchView('ai')" class="nav-btn flex flex-col items-center p-2 text-gray-400 hover:text-indigo-500 transition-colors" data-target="ai"><i class="fas fa-robot text-lg mb-1"></i><span class="text-[9px] font-medium">AI Chat</span></button>
         <button onclick="switchView('pengaturan')" class="nav-btn flex flex-col items-center p-2 text-gray-400 hover:text-blue-600 transition-colors" data-target="pengaturan"><i class="fas fa-cog text-lg mb-1"></i><span class="text-[9px] font-medium">Setting</span></button>
     </nav>
+
+    <!-- Global Datalists untuk Fitur Ketik & Pilih -->
+    <datalist id="datalist-locations"></datalist>
+    <datalist id="datalist-materials"></datalist>
+    <datalist id="datalist-workers"></datalist>
+    <datalist id="datalist-supplies"></datalist>
 </div>
 
 <script>
@@ -479,6 +459,34 @@
         return `${d.getDate().toString().padStart(2,'0')}/${(d.getMonth()+1).toString().padStart(2,'0')}/${d.getFullYear().toString().substring(2,4)}`;
     };
 
+    function setupAutoCalc(type) {
+        const qtyEl = document.getElementById(`${type}-qty`);
+        const priceEl = document.getElementById(`${type}-price`);
+        const totalEl = document.getElementById(`${type}-total`);
+
+        const calc = (changed) => {
+            let q = parseFloat(qtyEl.value);
+            let p = parseFloat(priceEl.value);
+            let t = parseFloat(totalEl.value);
+
+            // Logika kalkulasi cerdas 3 arah
+            if (changed === 'qty' && !isNaN(q)) {
+                if (!isNaN(p)) totalEl.value = Math.round(q * p);
+                else if (!isNaN(t) && q !== 0) priceEl.value = Math.round(t / q);
+            } else if (changed === 'price' && !isNaN(p)) {
+                if (!isNaN(q)) totalEl.value = Math.round(q * p);
+                else if (!isNaN(t) && p !== 0) qtyEl.value = (t / p).toFixed(2).replace(/\.00$/, '');
+            } else if (changed === 'total' && !isNaN(t)) {
+                if (!isNaN(q) && q !== 0) priceEl.value = Math.round(t / q);
+                else if (!isNaN(p) && p !== 0) qtyEl.value = (t / p).toFixed(2).replace(/\.00$/, '');
+            }
+        };
+
+        qtyEl.addEventListener('input', () => calc('qty'));
+        priceEl.addEventListener('input', () => calc('price'));
+        totalEl.addEventListener('input', () => calc('total'));
+    }
+
     function initApp() {
         const savedData = localStorage.getItem('kontraktorData');
         if (savedData) appData = JSON.parse(savedData);
@@ -492,6 +500,10 @@
         // Memuat API Key AI
         const savedAiKey = localStorage.getItem('gemini_api_key');
         if(savedAiKey) document.getElementById('setting-ai-key').value = savedAiKey;
+
+        // Mengaktifkan fitur hitung otomatis
+        setupAutoCalc('material');
+        setupAutoCalc('bahan');
 
         updateUI();
         switchView('dashboard');
@@ -528,19 +540,19 @@
     }
 
     function updateDropdowns() {
-        const fillOptions = (className, dataArr) => {
-            document.querySelectorAll(`.${className}`).forEach(select => {
-                select.innerHTML = '<option value="">Pilih...</option>' + dataArr.map(item => {
+        const fillDatalist = (id, dataArr) => {
+            const dl = document.getElementById(id);
+            if(dl) {
+                dl.innerHTML = dataArr.map(item => {
                     let name = item.name || item;
-                    let unit = item.unit ? ` (${item.unit})` : '';
-                    return `<option value="${name}">${name}${unit}</option>`;
+                    return `<option value="${name}">`;
                 }).join('');
-            });
+            }
         };
-        fillOptions('select-material', appData.settings.materials);
-        fillOptions('select-supply', appData.settings.supplies);
-        fillOptions('select-worker', appData.settings.workers);
-        fillOptions('select-location', appData.settings.locations || []);
+        fillDatalist('datalist-materials', appData.settings.materials);
+        fillDatalist('datalist-supplies', appData.settings.supplies);
+        fillDatalist('datalist-workers', appData.settings.workers);
+        fillDatalist('datalist-locations', appData.settings.locations || []);
     }
 
     function renderDashboardTabs() {
@@ -690,16 +702,17 @@
         e.preventDefault();
         let newTx = { id: Date.now().toString(), type: type, synced: false };
         newTx.date = document.getElementById(`${type}-date`).value;
-        newTx.location = document.getElementById(`${type}-location`).value;
-        newTx.name = document.getElementById(`${type}-name`).value;
+        newTx.location = document.getElementById(`${type}-location`).value.trim() || "";
+        newTx.name = document.getElementById(`${type}-name`).value.trim() || "-";
 
         if (type === 'material' || type === 'bahan') {
-            newTx.qty = parseFloat(document.getElementById(`${type}-qty`).value) || 1;
-            let masterList = type === 'material' ? appData.settings.materials : appData.settings.supplies;
-            let masterItem = masterList.find(m => (m.name || m) === newTx.name);
-            newTx.unit = masterItem ? (masterItem.unit || "") : "";
+            newTx.qty = parseFloat(document.getElementById(`${type}-qty`).value) || 0;
             newTx.price = parseFloat(document.getElementById(`${type}-price`).value) || 0;
-            newTx.total = newTx.qty * newTx.price;
+            newTx.total = parseFloat(document.getElementById(`${type}-total`).value) || 0;
+            
+            let masterList = type === 'material' ? appData.settings.materials : appData.settings.supplies;
+            let masterItem = masterList.find(m => (m.name || m).toLowerCase() === newTx.name.toLowerCase());
+            newTx.unit = masterItem ? (masterItem.unit || "") : "";
         } else {
             newTx.total = parseFloat(document.getElementById(`gaji-total`).value) || 0;
         }
@@ -805,40 +818,20 @@
 
     function updateSettingsMaster() {
         const renderTags = (settingKey, containerId) => {
-            document.getElementById(containerId).innerHTML = (appData.settings[settingKey] || []).map((item, idx) => {
+            const container = document.getElementById(containerId);
+            // Jika data kosong, tampilkan info
+            if (!appData.settings[settingKey] || appData.settings[settingKey].length === 0) {
+                container.innerHTML = `<span class="text-xs text-gray-400 italic">Belum ada data dari Spreadsheet</span>`;
+                return;
+            }
+            
+            container.innerHTML = (appData.settings[settingKey] || []).map((item, idx) => {
                 let name = item.name || item; let unit = item.unit ? ` <span class="text-gray-400 text-[10px]">(${item.unit})</span>` : '';
-                return `<span class="bg-gray-100 border border-gray-200 px-3 py-1.5 rounded-full text-xs flex items-center gap-2 shadow-sm">${name}${unit} <button onclick="removeMaster('${settingKey}', ${idx})" class="text-red-400 hover:text-red-600 transition bg-white rounded-full w-4 h-4 flex items-center justify-center shrink-0"><i class="fas fa-times text-[10px]"></i></button></span>`;
+                // Menampilkan tag tanpa tombol hapus
+                return `<span class="bg-gray-100 border border-gray-200 px-3 py-1.5 rounded-full text-xs flex items-center gap-2 shadow-sm">${name}${unit}</span>`;
             }).join('');
         };
         renderTags('locations', 'list-locations'); renderTags('materials', 'list-materials'); renderTags('supplies', 'list-supplies'); renderTags('workers', 'list-workers');
-    }
-
-    function addMaster(settingKey, nameId, unitId) {
-        const nameInput = document.getElementById(nameId);
-        const nameVal = nameInput.value.trim();
-        let unitVal = unitId ? document.getElementById(unitId).value.trim() : "";
-        if (!appData.settings[settingKey]) appData.settings[settingKey] = [];
-        if(nameVal) {
-            let exists = appData.settings[settingKey].some(i => (i.name || i).toLowerCase() === nameVal.toLowerCase());
-            if(!exists) {
-                if(settingKey === 'workers' || settingKey === 'locations') appData.settings[settingKey].push(nameVal);
-                else appData.settings[settingKey].push({name: nameVal, unit: unitVal});
-                nameInput.value = ''; if (unitId) document.getElementById(unitId).value = '';
-                saveData(); showToast('Master berhasil ditambah!');
-                if(appData.gasUrl && navigator.onLine) syncData(true);
-            } else showToast('Nama sudah ada!');
-        }
-    }
-
-    function removeMaster(settingKey, index) {
-        const item = appData.settings[settingKey][index];
-        const displayStr = item.name || item;
-        const modal = document.createElement('div');
-        modal.className = 'fixed inset-0 bg-black bg-opacity-60 z-[100] flex items-center justify-center backdrop-blur-sm px-4';
-        modal.innerHTML = `<div class="bg-white p-6 rounded-2xl w-full max-w-sm text-center shadow-2xl modal-content-animate"><div class="w-16 h-16 bg-red-100 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4"><i class="fas fa-trash-alt text-2xl"></i></div><h3 class="text-lg font-bold text-gray-800 mb-2">Hapus Master?</h3><p class="text-sm text-gray-500 mb-6">Hapus <strong>"${displayStr}"</strong>?</p><div class="flex gap-3"><button id="btn-cancel-del" class="flex-1 bg-gray-100 text-gray-700 py-2.5 rounded-xl font-medium hover:bg-gray-200 transition">Batal</button><button id="btn-confirm-del" class="flex-1 bg-red-600 text-white py-2.5 rounded-xl font-medium hover:bg-red-700 shadow-md transition">Hapus</button></div></div>`;
-        document.body.appendChild(modal);
-        document.getElementById('btn-cancel-del').onclick = () => modal.remove();
-        document.getElementById('btn-confirm-del').onclick = () => { appData.settings[settingKey].splice(index, 1); saveData(); showToast('Master dihapus!'); if(appData.gasUrl && navigator.onLine) syncData(true); modal.remove(); };
     }
 
     function saveGasUrl() {
@@ -857,7 +850,9 @@
         ['material', 'gaji', 'bahan'].forEach(type => { appData.transactions[type].forEach(tx => { if(!tx.synced) unsynced.push(tx); }); });
 
         try {
-            const response = await fetch(appData.gasUrl, { method: 'POST', body: JSON.stringify({ action: 'sync', data: unsynced, settings: appData.settings }), headers: { 'Content-Type': 'text/plain;charset=utf-8' }, redirect: 'follow' });
+            // PERBAIKAN: Aplikasi tidak lagi mengirim "settings: appData.settings" ke cloud.
+            // Aplikasi sekarang murni hanya mengirim data transaksi baru dan MENERIMA data master dari Cloud.
+            const response = await fetch(appData.gasUrl, { method: 'POST', body: JSON.stringify({ action: 'sync', data: unsynced }), headers: { 'Content-Type': 'text/plain;charset=utf-8' }, redirect: 'follow' });
             if (!response.ok) throw new Error("HTTP Status: " + response.status);
             const result = await response.json();
             if(result.status === 'success') { appData.transactions = result.data; if(result.settings) appData.settings = result.settings; saveData(); if(!isSilent) showToast('Aplikasi tersinkron!'); } 
@@ -874,15 +869,6 @@
         document.body.appendChild(modal);
         document.getElementById('btn-cancel-pull').onclick = () => modal.remove();
         document.getElementById('btn-confirm-pull').onclick = () => { modal.remove(); syncData(false); };
-    }
-
-    function resetData() {
-        const modal = document.createElement('div');
-        modal.className = 'fixed inset-0 bg-black bg-opacity-60 z-[100] flex items-center justify-center backdrop-blur-sm px-4';
-        modal.innerHTML = `<div class="bg-white p-6 rounded-2xl w-full max-w-sm text-center shadow-2xl modal-content-animate border-t-4 border-red-600"><div class="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4"><i class="fas fa-exclamation-triangle text-3xl"></i></div><h3 class="text-lg font-bold text-gray-800 mb-2 text-red-600">Hapus Semua Data?</h3><p class="text-sm text-gray-500 mb-6">HP akan direset seperti baru (Data Excel tetap aman). Lanjutkan?</p><div class="flex gap-3"><button id="btn-cancel-reset" class="flex-1 bg-gray-100 text-gray-700 py-2.5 rounded-xl font-medium hover:bg-gray-200 transition">Batal</button><button id="btn-confirm-reset" class="flex-1 bg-red-600 text-white py-2.5 rounded-xl font-medium hover:bg-red-700 shadow-md transition">Reset</button></div></div>`;
-        document.body.appendChild(modal);
-        document.getElementById('btn-cancel-reset').onclick = () => modal.remove();
-        document.getElementById('btn-confirm-reset').onclick = () => { localStorage.removeItem('kontraktorData'); localStorage.removeItem('gemini_api_key'); location.reload(); };
     }
 
     window.onload = initApp;
