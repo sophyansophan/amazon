@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kontraktor-pro-v1';
+const CACHE_NAME = 'kontraktor-pro-v2';
 const urlsToCache = [
   './index.html',
   './manifest.json',
