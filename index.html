@@ -407,6 +407,20 @@
     </main>
 
     <!-- MODAL POPUP & KOMPONEN LAINNYA -->
+    <div id="logout-modal" class="fixed inset-0 bg-black bg-opacity-60 z-[9999] hidden items-center justify-center backdrop-blur-sm px-4">
+        <div class="bg-white p-6 rounded-2xl w-full max-w-sm text-center shadow-2xl modal-content-animate">
+            <div class="w-16 h-16 bg-red-100 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-sign-out-alt text-2xl"></i>
+            </div>
+            <h3 class="text-lg font-bold text-gray-800 mb-2">Konfirmasi Logout</h3>
+            <p class="text-sm text-gray-500 mb-6">Apakah Anda yakin ingin keluar dari aplikasi?</p>
+            <div class="flex gap-3">
+                <button onclick="closeLogoutModal()" class="flex-1 bg-gray-100 text-gray-700 py-2.5 rounded-xl font-medium hover:bg-gray-200 transition shadow-sm">Batal</button>
+                <button onclick="executeLogout()" class="flex-1 bg-red-600 text-white py-2.5 rounded-xl font-medium hover:bg-red-700 shadow-md transition">Ya, Keluar</button>
+            </div>
+        </div>
+    </div>
+
     <div id="history-modal" class="fixed inset-0 bg-black bg-opacity-60 z-[100] hidden items-end sm:items-center justify-center backdrop-blur-sm">
         <div class="bg-gray-50 w-full sm:max-w-sm max-h-[85vh] rounded-t-2xl sm:rounded-2xl flex flex-col shadow-2xl modal-content-animate overflow-hidden">
             <div class="bg-white p-4 border-b border-gray-200 flex justify-between items-start shadow-sm z-10">
@@ -512,7 +526,7 @@
     }
 
     // FUNGSI INIT APLIKASI
-    function initApp() {
+    function initApp(skipInitialSync = false) {
         // CEK LOGIN
         const savedSession = localStorage.getItem('login_session_app');
         if (savedSession) {
@@ -526,7 +540,7 @@
             document.getElementById('main-nav').classList.remove('hidden');
             document.getElementById('main-nav').classList.add('flex');
             
-            loadDataAndStart();
+            loadDataAndStart(skipInitialSync);
         } else {
             // Belum Login, sembunyikan navigasi
             document.getElementById('main-header').classList.add('hidden');
@@ -537,7 +551,7 @@
     }
 
     // PROSES SETELAH LOGIN BERHASIL
-    function loadDataAndStart() {
+    function loadDataAndStart(skipSync = false) {
         const savedData = localStorage.getItem('kontraktorData_app');
         if (savedData) {
             let parsed = JSON.parse(savedData);
@@ -561,7 +575,7 @@
         switchView('dashboard');
 
         // Tarik data setelah masuk dashboard
-        if(navigator.onLine) {
+        if(!skipSync && navigator.onLine) {
             syncData(true, true); // true=silent toast, true=blocking loader
         }
     }
@@ -593,26 +607,56 @@
             if (result.status === 'success') {
                 localStorage.setItem('login_session_app', JSON.stringify(result.user));
                 document.getElementById('login-password').value = ''; // bersihkan field
-                showToast("Login Berhasil!");
-                initApp(); // Restart alur
+                
+                // --- BAGIAN BARU: Transisi Mulus ke Tarik Data ---
+                sessionUser = result.user; // Daftarkan sesi agar sinkronisasi diizinkan
+                
+                // JANGAN tutup loader, langsung ubah judul & ikonnya
+                document.getElementById('global-loader-text').textContent = "Mengunduh data proyek terbaru...";
+                document.getElementById('global-loader-icon').className = 'fas fa-sync-alt fa-spin text-2xl';
+                document.getElementById('global-loader-title').textContent = 'Sinkronisasi Data';
+                
+                // Tunggu sampai tarik data selesai secara background
+                const syncResult = await syncData(true, false); 
+                
+                toggleGlobalLoader(false); // Sembunyikan layar loading SECARA TOTAL di sini
+                
+                // Beritahu pengguna status tarikan data
+                if (syncResult && syncResult.success) {
+                    showToast("Login & Data Berhasil Diperbarui!");
+                } else {
+                    showToast("Login Sukses, tapi gagal tarik data: " + (syncResult ? syncResult.message : "Error tak diketahui"));
+                }
+                
+                // Buka aplikasi (true = instruksikan agar tidak perlu tarik data 2x)
+                initApp(true); 
             } else {
                 showToast(result.message);
+                toggleGlobalLoader(false);
             }
         } catch (error) {
             showToast("Error sistem: " + error.message);
-        } finally {
             toggleGlobalLoader(false);
         }
     }
 
     // FUNGSI LOGOUT
     function handleLogout() {
-        if(confirm("Apakah Anda yakin ingin keluar?")) {
-            localStorage.removeItem('login_session_app');
-            sessionUser = null;
-            showToast("Berhasil Logout");
-            initApp();
-        }
+        document.getElementById('logout-modal').classList.remove('hidden');
+        document.getElementById('logout-modal').classList.add('flex');
+    }
+
+    function closeLogoutModal() {
+        document.getElementById('logout-modal').classList.add('hidden');
+        document.getElementById('logout-modal').classList.remove('flex');
+    }
+
+    function executeLogout() {
+        closeLogoutModal();
+        localStorage.removeItem('login_session_app');
+        sessionUser = null;
+        showToast("Berhasil Logout");
+        initApp();
     }
 
     function saveData() { localStorage.setItem('kontraktorData_app', JSON.stringify(appData)); updateUI(); }
@@ -1082,6 +1126,57 @@
         if(key) { localStorage.setItem('gemini_api_key_app', key); showToast('API Key Gemini Disimpan!'); } else { localStorage.removeItem('gemini_api_key_app'); showToast('API Key Gemini Dihapus.'); }
     }
     
+    async function syncData(isSilent = false, isBlocking = false) {
+        if (!sessionUser) return { success: false, message: "Belum login" }; // Mencegah sinkronisasi kalau belum login
+        
+        if(isBlocking) toggleGlobalLoader(true, "Memperbarui informasi dari server...", true);
+        const syncIcon = document.getElementById('sync-icon'); 
+        if (syncIcon) syncIcon.classList.add('fa-spin');
+        
+        if(!isSilent && !isBlocking) showToast('Proses Sinkronisasi...');
+
+        const unsyncedTx = (appData.transactions || []).filter(tx => !tx.synced);
+        const unsyncedInc = (appData.incomes || []).filter(inc => !inc.synced);
+
+        try {
+            const response = await fetch(HARDCODED_GAS_URL, { 
+                method: 'POST', 
+                body: JSON.stringify({ action: 'sync', data: unsyncedTx, incomes: unsyncedInc }), 
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
+                redirect: 'follow' 
+            });
+            
+            if (!response.ok) throw new Error("HTTP Status: " + response.status);
+            
+            // Perbaikan keamanan parsing JSON agar aplikasi tidak nge-hang
+            const rawText = await response.text();
+            let result;
+            try {
+                result = JSON.parse(rawText);
+            } catch (e) {
+                throw new Error("Respon server bukan JSON (Mungkin script Google error)");
+            }
+            
+            if(result.status === 'success') { 
+                appData.transactions = Array.isArray(result.data) ? result.data : [];
+                appData.incomes = Array.isArray(result.incomes) ? result.incomes : [];
+                if(result.settings) appData.settings = result.settings;
+                saveData(); 
+                if(!isSilent && !isBlocking) showToast('Aplikasi tersinkron!'); 
+                return { success: true, message: "OK" };
+            } else {
+                if(!isSilent && !isBlocking) showToast('Gagal Tarik: ' + result.message);
+                return { success: false, message: result.message };
+            }
+        } catch(err) { 
+            if(!isSilent && !isBlocking) showToast('Gagal terhubung ke Cloud.'); 
+            return { success: false, message: err.message };
+        } finally { 
+            if (syncIcon) syncIcon.classList.remove('fa-spin'); 
+            if(isBlocking) toggleGlobalLoader(false);
+        }
+    }
+
     function handleEnter(e) { if(e.key === 'Enter') handleSendChat(); }
     function scrollToChatBottom() { const container = document.getElementById('chat-box-container'); if(container) { setTimeout(() => { container.scrollTop = container.scrollHeight; }, 100); } }
 
