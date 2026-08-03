@@ -11,6 +11,10 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- Pustaka Tambahan untuk Generate PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
@@ -381,6 +385,15 @@
                         <button onclick="syncData(false, true)" class="w-full bg-indigo-600 text-white rounded-lg py-2 text-sm font-medium hover:bg-indigo-700 transition flex items-center justify-center shadow-sm"><i class="fas fa-cloud-download-alt mr-1"></i> Tarik Data Manual</button>
                     </div>
 
+                    <!-- BLOK BARU: EKSPOR PDF -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-6">
+                        <h3 class="font-semibold mb-2 text-sm text-gray-700 border-b pb-2"><i class="fas fa-file-pdf text-red-500 mr-2"></i>Ekspor Laporan PDF</h3>
+                        <p class="text-[10px] text-gray-500 mb-3 leading-relaxed">
+                            Unduh seluruh riwayat transaksi (Pemasukan & Pengeluaran) ke dalam bentuk dokumen PDF yang rapi untuk dicetak.
+                        </p>
+                        <button onclick="downloadPDF()" class="w-full bg-red-500 text-white rounded-lg py-2 text-sm font-medium hover:bg-red-600 transition flex items-center justify-center shadow-sm"><i class="fas fa-download mr-1"></i> Download Laporan PDF</button>
+                    </div>
+
                     <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-6">
                         <h3 class="font-semibold mb-2 text-sm text-gray-700 border-b pb-2"><i class="fas fa-sparkles text-amber-500 mr-2"></i>Pengaturan AI Assistant</h3>
                         <label class="block text-[11px] text-gray-500 mb-1">API Key Gemini Google (Gratis)</label>
@@ -445,6 +458,17 @@
                 <button onclick="resetDateFilter()" class="flex-1 bg-gray-100 text-gray-700 py-3 rounded-xl font-medium text-sm hover:bg-gray-200 transition">Reset</button>
                 <button onclick="applyDateFilter()" class="flex-1 bg-blue-600 text-white py-3 rounded-xl font-medium text-sm hover:bg-blue-700 shadow-md transition">Terapkan</button>
             </div>
+        </div>
+    </div>
+
+    <!-- MODAL DETAIL TRANSAKSI -->
+    <div id="trx-detail-modal" class="fixed inset-0 bg-black bg-opacity-60 z-[100] hidden items-end sm:items-center justify-center backdrop-blur-sm px-2">
+        <div class="bg-white w-full sm:max-w-sm rounded-t-2xl sm:rounded-2xl flex flex-col shadow-2xl modal-content-animate overflow-hidden">
+            <div class="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50 shadow-sm z-10">
+                <h3 class="font-bold text-gray-800" id="trx-detail-title">Detail Transaksi</h3>
+                <button onclick="closeTrxDetailModal()" class="w-8 h-8 flex items-center justify-center bg-gray-200 text-gray-500 rounded-full hover:bg-red-100 hover:text-red-500 transition shadow-inner"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="p-5 overflow-y-auto max-h-[75vh]" id="trx-detail-content"></div>
         </div>
     </div>
 
@@ -1039,14 +1063,20 @@
             if (item.jenis === 'out') {
                 const sty = getCategoryStyle(item.category);
                 let tagLokasi = `<span class="bg-white border border-gray-200 px-1.5 py-0.5 rounded shadow-sm text-[9px] text-gray-600 font-medium"><i class="fas fa-map-marker-alt text-blue-500"></i> ${item.location||'Umum'}</span>`;
-                let iconLampiran = item.image ? `<i class="fas fa-paperclip text-blue-400 ml-1" title="Ada Foto Bukti"></i>` : '';
+                
+                // REVISI: Ikon lampiran dibuat bisa diklik langsung dan mengarah ke link
+                let iconLampiran = item.image ? `<a href="${item.image}" target="_blank" onclick="event.stopPropagation()" class="ml-1 text-blue-500 hover:text-blue-700 transition inline-block" title="Buka Bukti di Google Drive"><i class="fas fa-paperclip"></i></a>` : '';
+                
                 let labelToko = item.store ? `<div class="text-[9px] text-yellow-600 bg-yellow-50 px-1.5 py-0.5 rounded border border-yellow-200 ml-1 inline-block"><i class="fas fa-store mr-1"></i>${item.store}</div>` : '';
 
-                return `<tr class="hover:bg-red-50/50 transition-colors group"><td class="p-3 border-b border-gray-50"><div class="flex items-start gap-3"><div class="w-9 h-9 rounded-xl ${sty.bg} ${sty.text} flex items-center justify-center flex-shrink-0 mt-0.5 border ${sty.border} shadow-sm relative"><i class="fas ${sty.icon} text-sm"></i><div class="absolute -top-1 -right-1 bg-red-500 text-white w-4 h-4 rounded-full flex items-center justify-center border-2 border-white"><i class="fas fa-arrow-up text-[8px]"></i></div></div><div class="flex-1 w-full"><div class="flex justify-between items-start mb-0.5"><div class="font-bold text-gray-800 text-sm leading-tight">${item.name || '-'}${iconLampiran}${labelToko}</div><div class="font-bold text-red-600 text-sm ml-2">-${formatRp(item.total)}</div></div><div class="flex justify-between items-center mt-1"><div class="text-[10px] text-gray-500">${formatDate(item.date)} &bull; <span class="font-bold text-gray-700">${item.qty} ${item.unit||''}</span> ${tagLokasi}</div><div class="text-[9px] font-medium text-gray-500 bg-gray-100 border border-gray-200 px-1.5 py-0.5 rounded shadow-sm">${item.category}</div></div></div></div></td></tr>`;
+                return `<tr onclick="showTransactionDetail('${item.id}', 'out')" class="hover:bg-red-50/50 transition-colors group cursor-pointer active:bg-red-100"><td class="p-3 border-b border-gray-50"><div class="flex items-start gap-3"><div class="w-9 h-9 rounded-xl ${sty.bg} ${sty.text} flex items-center justify-center flex-shrink-0 mt-0.5 border ${sty.border} shadow-sm relative"><i class="fas ${sty.icon} text-sm"></i><div class="absolute -top-1 -right-1 bg-red-500 text-white w-4 h-4 rounded-full flex items-center justify-center border-2 border-white"><i class="fas fa-arrow-up text-[8px]"></i></div></div><div class="flex-1 w-full"><div class="flex justify-between items-start mb-0.5"><div class="font-bold text-gray-800 text-sm leading-tight">${item.name || '-'}${iconLampiran}${labelToko}</div><div class="font-bold text-red-600 text-sm ml-2">-${formatRp(item.total)}</div></div><div class="flex justify-between items-center mt-1"><div class="text-[10px] text-gray-500">${formatDate(item.date)} &bull; <span class="font-bold text-gray-700">${item.qty} ${item.unit||''}</span> ${tagLokasi}</div><div class="text-[9px] font-medium text-gray-500 bg-gray-100 border border-gray-200 px-1.5 py-0.5 rounded shadow-sm">${item.category}</div></div></div></div></td></tr>`;
             } else {
                 let tagLokasi = `<span class="bg-white border border-gray-200 px-1.5 py-0.5 rounded shadow-sm text-[9px] text-gray-600 font-medium"><i class="fas fa-map-marker-alt text-blue-500"></i> ${item.location||'Umum'}</span>`;
-                let iconLampiran = item.image ? `<a href="${item.image}" target="_blank" title="Ada Foto Bukti"><i class="fas fa-paperclip text-green-500 ml-2 hover:text-green-700 transition"></i></a>` : '';
-                return `<tr class="hover:bg-green-50/50 transition-colors group"><td class="p-3 border-b border-gray-50"><div class="flex items-start gap-3"><div class="w-9 h-9 rounded-xl bg-green-50 text-green-600 flex items-center justify-center flex-shrink-0 mt-0.5 border border-green-200 shadow-sm relative"><i class="fas fa-hand-holding-usd text-sm"></i><div class="absolute -top-1 -right-1 bg-green-500 text-white w-4 h-4 rounded-full flex items-center justify-center border-2 border-white"><i class="fas fa-arrow-down text-[8px]"></i></div></div><div class="flex-1 w-full"><div class="flex justify-between items-start mb-0.5"><div class="font-bold text-gray-800 text-sm leading-tight italic">"${item.note || 'Pemasukan'}"${iconLampiran}</div><div class="font-bold text-green-600 text-sm ml-2">+${formatRp(item.amount)}</div></div><div class="flex justify-between items-center mt-1"><div class="text-[10px] text-gray-500">${formatDate(item.date)} ${tagLokasi}</div><div class="text-[9px] font-medium text-green-700 bg-green-100 border border-green-200 px-1.5 py-0.5 rounded shadow-sm">Pemasukan</div></div></div></div></td></tr>`;
+                
+                // REVISI: Ikon lampiran dibuat bisa diklik langsung dan mengarah ke link
+                let iconLampiran = item.image ? `<a href="${item.image}" target="_blank" onclick="event.stopPropagation()" class="ml-1 text-green-500 hover:text-green-700 transition inline-block" title="Buka Bukti di Google Drive"><i class="fas fa-paperclip"></i></a>` : '';
+                
+                return `<tr onclick="showTransactionDetail('${item.id}', 'in')" class="hover:bg-green-50/50 transition-colors group cursor-pointer active:bg-green-100"><td class="p-3 border-b border-gray-50"><div class="flex items-start gap-3"><div class="w-9 h-9 rounded-xl bg-green-50 text-green-600 flex items-center justify-center flex-shrink-0 mt-0.5 border border-green-200 shadow-sm relative"><i class="fas fa-hand-holding-usd text-sm"></i><div class="absolute -top-1 -right-1 bg-green-500 text-white w-4 h-4 rounded-full flex items-center justify-center border-2 border-white"><i class="fas fa-arrow-down text-[8px]"></i></div></div><div class="flex-1 w-full"><div class="flex justify-between items-start mb-0.5"><div class="font-bold text-gray-800 text-sm leading-tight italic">"${item.note || 'Pemasukan'}"${iconLampiran}</div><div class="font-bold text-green-600 text-sm ml-2">+${formatRp(item.amount)}</div></div><div class="flex justify-between items-center mt-1"><div class="text-[10px] text-gray-500">${formatDate(item.date)} ${tagLokasi}</div><div class="text-[9px] font-medium text-green-700 bg-green-100 border border-green-200 px-1.5 py-0.5 rounded shadow-sm">Pemasukan</div></div></div></div></td></tr>`;
             }
         }).join('');
     }
@@ -1126,6 +1156,106 @@
         if(key) { localStorage.setItem('gemini_api_key_app', key); showToast('API Key Gemini Disimpan!'); } else { localStorage.removeItem('gemini_api_key_app'); showToast('API Key Gemini Dihapus.'); }
     }
     
+    // FUNGSI BARU: GENERATE DAN DOWNLOAD PDF
+    function downloadPDF() {
+        if (!window.jspdf) {
+            showToast("Pustaka PDF sedang dimuat, coba lagi sebentar.");
+            return;
+        }
+        
+        // Tampilkan layar loading agar pengguna tahu proses sedang berjalan
+        toggleGlobalLoader(true, "Menyiapkan Dokumen PDF...", false);
+        
+        setTimeout(() => {
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF('p', 'pt', 'a4'); // Kertas A4 (Portrait)
+                
+                // 1. Susun dan urutkan data dari yang paling lama ke terbaru
+                let combinedTrx = [
+                    ...appData.transactions.map(tx => ({ ...tx, jenis: 'out' })),
+                    ...(appData.incomes || []).map(inc => ({ ...inc, jenis: 'in' }))
+                ].sort((a, b) => new Date(a.date) - new Date(b.date)); 
+                
+                if(combinedTrx.length === 0) {
+                    showToast("Tidak ada data transaksi untuk diekspor!");
+                    toggleGlobalLoader(false);
+                    return;
+                }
+
+                // 2. Kalkulasi Total
+                const totalOut = appData.transactions.reduce((sum, tx) => sum + (Number(tx.total) || 0), 0);
+                const totalIn = (appData.incomes || []).reduce((sum, inc) => sum + (Number(inc.amount) || 0), 0);
+                const saldo = totalIn - totalOut;
+
+                // 3. Header Dokumen
+                doc.setFontSize(18);
+                doc.setFont("helvetica", "bold");
+                doc.text("LAPORAN KEUANGAN PROYEK", 40, 50);
+                
+                doc.setFontSize(10);
+                doc.setFont("helvetica", "normal");
+                doc.text(`Dicetak pada: ${formatDate(new Date().toISOString())}`, 40, 70);
+                doc.text(`Oleh: ${sessionUser ? sessionUser.name : 'Unknown User'}`, 40, 85);
+                
+                // 4. Kotak Ringkasan (Summary Box)
+                doc.setFillColor(240, 248, 255); // Warna AliceBlue
+                doc.rect(40, 100, 515, 65, 'F');
+                doc.setFont("helvetica", "bold");
+                doc.text(`Total Pemasukan : ${formatRp(totalIn)}`, 50, 120);
+                doc.text(`Total Pengeluaran : ${formatRp(totalOut)}`, 50, 135);
+                doc.text(`Saldo Akhir       : ${formatRp(saldo)}`, 50, 150);
+
+                // 5. Susun Baris Tabel
+                const tableColumn = ["No", "Tanggal", "Jenis", "Rincian Transaksi", "Lokasi", "Nominal"];
+                const tableRows = [];
+
+                combinedTrx.forEach((item, index) => {
+                    let jenisTxt = item.jenis === 'out' ? 'Keluar' : 'Masuk';
+                    let rincian = item.jenis === 'out' ? `${item.name} (${item.category})\nQty: ${item.qty} ${item.unit || ''}` : `Dana Masuk\nCatatan: ${item.note || '-'}`;
+                    let lokasi = item.location || 'Umum';
+                    let nominal = item.jenis === 'out' ? `- ${formatRp(item.total)}` : `+ ${formatRp(item.amount)}`;
+                    
+                    tableRows.push([
+                        index + 1,
+                        formatDate(item.date),
+                        jenisTxt,
+                        rincian,
+                        lokasi,
+                        nominal
+                    ]);
+                });
+
+                // 6. Buat Tabel AutoTable
+                doc.autoTable({
+                    startY: 185,
+                    head: [tableColumn],
+                    body: tableRows,
+                    theme: 'striped',
+                    headStyles: { fillColor: [37, 99, 235], textColor: 255 }, // Warna Header Biru (Tailwind Blue-600)
+                    styles: { fontSize: 8, cellPadding: 4 },
+                    columnStyles: {
+                        0: { cellWidth: 30 }, // No
+                        1: { cellWidth: 60 }, // Tanggal
+                        2: { cellWidth: 45 }, // Jenis
+                        5: { halign: 'right', fontStyle: 'bold' } // Nominal (Rata Kanan)
+                    }
+                });
+
+                // 7. Simpan Dokumen
+                let fileNameDate = new Date().toISOString().split('T')[0];
+                doc.save(`Laporan_Proyek_${fileNameDate}.pdf`);
+                
+                showToast("Laporan PDF Berhasil Diunduh!");
+            } catch (error) {
+                console.error(error);
+                showToast("Gagal membuat PDF: Terjadi kesalahan sistem.");
+            } finally {
+                toggleGlobalLoader(false);
+            }
+        }, 800); // Penundaan agar Loading Animation sempat muncul
+    }
+
     async function syncData(isSilent = false, isBlocking = false) {
         if (!sessionUser) return { success: false, message: "Belum login" }; // Mencegah sinkronisasi kalau belum login
         
@@ -1179,6 +1309,87 @@
 
     function handleEnter(e) { if(e.key === 'Enter') handleSendChat(); }
     function scrollToChatBottom() { const container = document.getElementById('chat-box-container'); if(container) { setTimeout(() => { container.scrollTop = container.scrollHeight; }, 100); } }
+
+    function showTransactionDetail(id, jenis) {
+        const modal = document.getElementById('trx-detail-modal');
+        const content = document.getElementById('trx-detail-content');
+        const title = document.getElementById('trx-detail-title');
+
+        let item;
+        if (jenis === 'out') {
+            item = appData.transactions.find(t => t.id === id);
+            if (!item) return;
+            const sty = getCategoryStyle(item.category);
+
+            title.innerHTML = `<span class="text-red-600 flex items-center"><i class="fas fa-arrow-circle-up mr-2"></i>Rincian Pengeluaran</span>`;
+
+            // REVISI: Cek apakah itu link G-Drive atau sekadar file mentah (belum tersinkron)
+            let isDrive = item.image && item.image.startsWith('http');
+            let iconDrive = isDrive ? 'fab fa-google-drive' : 'fas fa-image';
+            let txtDrive = isDrive ? 'Buka G-Drive' : 'Lihat Gambar';
+            
+            let imgHtml = item.image ? `<div class="mt-4 p-3 bg-blue-50 rounded-xl border border-blue-100 flex justify-between items-center"><div class="text-xs font-bold text-blue-800"><i class="${iconDrive} text-blue-500 mr-2"></i>Ada Nota / Bukti</div><a href="${item.image}" target="_blank" class="bg-blue-600 text-white px-3 py-1.5 rounded-lg text-[10px] font-bold hover:bg-blue-700 transition shadow-md active:scale-95"><i class="${iconDrive} mr-1"></i> ${txtDrive}</a></div>` : '';
+
+            content.innerHTML = `
+                <div class="flex items-center gap-4 mb-5 pb-5 border-b border-gray-100">
+                    <div class="w-14 h-14 rounded-2xl ${sty.bg} ${sty.text} flex items-center justify-center border ${sty.border} shadow-sm text-2xl shrink-0">
+                        <i class="fas ${sty.icon}"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-lg font-bold text-gray-800 leading-tight">${item.name || '-'}</h2>
+                        <p class="text-[11px] font-semibold text-gray-500 mt-1 bg-gray-100 inline-block px-2 py-0.5 rounded border border-gray-200">${item.category}</p>
+                    </div>
+                </div>
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center border-b border-gray-50 pb-2"><span class="text-xs font-medium text-gray-500">Total Nominal</span><span class="font-black text-red-600 text-lg">-${formatRp(item.total)}</span></div>
+                    <div class="flex justify-between items-center border-b border-gray-50 pb-2"><span class="text-xs font-medium text-gray-500">Tanggal</span><span class="text-sm font-bold text-gray-800"><i class="far fa-calendar-alt text-gray-400 mr-1"></i> ${formatDate(item.date)}</span></div>
+                    <div class="flex justify-between items-center border-b border-gray-50 pb-2"><span class="text-xs font-medium text-gray-500">Lokasi Proyek</span><span class="text-sm font-bold text-gray-800"><i class="fas fa-map-marker-alt text-blue-400 mr-1"></i> ${item.location || 'Umum'}</span></div>
+                    <div class="flex justify-between items-center border-b border-gray-50 pb-2"><span class="text-xs font-medium text-gray-500">Toko / Suplier</span><span class="text-sm font-bold text-yellow-700 bg-yellow-50 px-2 py-0.5 rounded border border-yellow-200">${item.store || '-'}</span></div>
+                    <div class="flex justify-between items-center border-b border-gray-50 pb-2"><span class="text-xs font-medium text-gray-500">Rincian Pembelian</span><span class="text-sm font-bold text-gray-800">${item.qty} ${item.unit || ''} <span class="text-gray-300 font-normal mx-1">x</span> ${formatRp(item.price)}</span></div>
+                </div>
+                ${imgHtml}
+            `;
+        } else {
+            item = appData.incomes.find(t => t.id === id);
+            if (!item) return;
+
+            title.innerHTML = `<span class="text-green-600 flex items-center"><i class="fas fa-arrow-circle-down mr-2"></i>Rincian Pemasukan</span>`;
+
+            // REVISI: Cek apakah itu link G-Drive atau sekadar file mentah (belum tersinkron)
+            let isDrive = item.image && item.image.startsWith('http');
+            let iconDrive = isDrive ? 'fab fa-google-drive' : 'fas fa-image';
+            let txtDrive = isDrive ? 'Buka G-Drive' : 'Lihat Gambar';
+
+            let imgHtml = item.image ? `<div class="mt-4 p-3 bg-blue-50 rounded-xl border border-blue-100 flex justify-between items-center"><div class="text-xs font-bold text-blue-800"><i class="${iconDrive} text-blue-500 mr-2"></i>Ada Transfer / Bukti</div><a href="${item.image}" target="_blank" class="bg-blue-600 text-white px-3 py-1.5 rounded-lg text-[10px] font-bold hover:bg-blue-700 transition shadow-md active:scale-95"><i class="${iconDrive} mr-1"></i> ${txtDrive}</a></div>` : '';
+
+            content.innerHTML = `
+                <div class="flex items-center gap-4 mb-5 pb-5 border-b border-gray-100">
+                    <div class="w-14 h-14 rounded-2xl bg-green-50 text-green-600 flex items-center justify-center border border-green-200 shadow-sm text-2xl shrink-0">
+                        <i class="fas fa-hand-holding-usd"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h2 class="text-base font-bold text-gray-800 leading-tight italic">"${item.note || 'Pemasukan Tanpa Catatan'}"</h2>
+                        <p class="text-[11px] font-semibold text-green-700 mt-1 bg-green-100 inline-block px-2 py-0.5 rounded border border-green-200">Dana Masuk</p>
+                    </div>
+                </div>
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center border-b border-gray-50 pb-2"><span class="text-xs font-medium text-gray-500">Nominal Pemasukan</span><span class="font-black text-green-600 text-lg">+${formatRp(item.amount)}</span></div>
+                    <div class="flex justify-between items-center border-b border-gray-50 pb-2"><span class="text-xs font-medium text-gray-500">Tanggal</span><span class="text-sm font-bold text-gray-800"><i class="far fa-calendar-alt text-gray-400 mr-1"></i> ${formatDate(item.date)}</span></div>
+                    <div class="flex justify-between items-center border-b border-gray-50 pb-2"><span class="text-xs font-medium text-gray-500">Lokasi / Sumber</span><span class="text-sm font-bold text-gray-800"><i class="fas fa-map-marker-alt text-blue-400 mr-1"></i> ${item.location || 'Umum'}</span></div>
+                </div>
+                ${imgHtml}
+            `;
+        }
+
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+    }
+
+    function closeTrxDetailModal() {
+        const modal = document.getElementById('trx-detail-modal');
+        modal.classList.remove('flex');
+        modal.classList.add('hidden');
+    }
 
     function appendChatBubble(role, text, id = null) {
         const chatBox = document.getElementById('chat-box'); const bubble = document.createElement('div'); if(id) bubble.id = id;
